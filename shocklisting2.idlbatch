@@ -1,0 +1,643 @@
+
+.run iterLoader
+
+.run mavenDataLoader
+.run clearPlots
+.run tplot_element
+
+.run daySaver
+.run linearStatRegress
+
+
+@routineCompiler.idlbatch
+.run errorsaver
+
+;.run savedshocklister
+;savedshocklister
+;exit
+.run savedshockChecker
+savedshockChecker
+;exit
+.run overvmachplotter
+;overconcluder,/REMOVENEGATIVES,maxAllowed=20,/manual;,/load2,/nofix
+overvmachplotter,/REMOVENEGATIVES,maxAllowed=20,/nofix,/manual;,/load2,/nofix
+;exit
+aggraderive
+.run aggrafilter
+aggrafilter,'Mfms',-1
+aggrafilter,'FM',10
+aggrafilter,'beta',20
+;aggrafilter,'beta_proton',10
+get_data,'Mfms',data=datMfms
+store_data,'Mfms2',data=datMfms
+
+
+tplot,"N_e N_p Electron_Ion_fraction Electron_Ion_fracdiff uDX"
+
+get_data,"N_ion",data=datNi
+get_data,"upM",data=datUpM
+
+N_i=datNi.y
+upM=datUpM.y
+AlfCalc=upM/Sqrt(!const.mp* 10.0^6 *N_i) /10.0^9
+;store_data,'Alfven',data={x: t ,y: Alfven ,ytitle:[ '$V_A$ [km/s]' ], YN:[ 'Alfven Speed' ], fn:[ 'vA' ], binsize:[ 100. ], radian:[0],degree:[0]}
+
+
+get_data,"Alfven",data=datAlf
+Alfven=datAlf.y
+AlfvenFdiff=fracdiff(Alfven,AlfCalc)
+
+store_data,"AlfenFdiff",data={x:datUpM.x ,y: Alfvenfdiff ,ytitle: '% diff($\langle B /\sqrt{\mu_0 \rho^{ion}}\rangle_{U}$,$\langle B\rangle_U /\sqrt{\mu_0 \langle\rho^{ion}\rangle_U}$)' , YN:'% diff(mean & calculated Alfven)', fn:'vAFdiff', binsize:[ .2 ], radian:[0],degree:[0]}
+
+get_data,'overshootAmplitude',data=datA;{x: t ,y: B2B1_Fit ,ytitle:[ '$B^{Fit}_{Downstream}$/$B^{Fit}_{Upstream}$' ], YN:[ "Fitted Magnetic Jump" ], fn:[ "DownstreamFitVsUpstreamFit" ], binsize:[ .2 ], radian:[0],degree:[0]}
+
+get_data,'B2B1fit',data=datB2B1;{x: t ,y: B2B1_Fit ,ytitle:[ '$B^{Fit}_{Downstream}$/$B^{Fit}_{Upstream}$' ], YN:[ "Fitted Magnetic Jump" ], fn:[ "DownstreamFitVsUpstreamFit" ], binsize:[ .2 ], radian:[0],degree:[0]}
+get_data,'overshootAmplitude',data=datA;{x: t ,y: B2B1_Fit ,ytitle:[ '$B^{Fit}_{Downstream}$/$B^{Fit}_{Upstream}$' ], YN:[ "Fitted Magnetic Jump" ], fn:[ "DownstreamFitVsUpstreamFit" ], binsize:[ .2 ], radian:[0],degree:[0]}
+
+A=datA.y
+Amean=mean(A)
+
+Avar=(A-Amean)/AMean
+
+
+store_data,'OverAmpvarMeanRatio',dat={x:datA.x ,y: Avar ,ytitle: '$|A_{fit}-\langle A_{fit}\rangle|/\langle A_{fit}\rangle$' , YN:'Fit Overshoot Amplitude variance/Mean Ratio', fn:'OverAmpvmr', binsize:[ .2 ], radian:[0],degree:[0]}
+
+B2B1=datB2B1.y
+B2B1mean=mean(B2B1)
+
+B2B1var=abs(B2B1-B2B1mean)/B2B1Mean
+
+
+store_data,'B2B1varMeanRatio',dat={x:datUpM.x ,y: B2B1var ,ytitle: '$|B^{Fit}_{Down}/B^{Fit}_{Up}-\langle B^{Fit}_{Down}/B^{Fit}_{Up}\rangle|/\langle B^{Fit}_{Down}/B^{Fit}_{Up}\rangle$' , YN:'Fit Magnetic Jump variance/Mean Ratio', fn:'B2B1vmr', binsize:[ .2 ], radian:[0],degree:[0]}
+
+get_data,'MachAlfven',DATA=datMA
+t=datUpM.x
+minA=min(datMA.y,maloc)
+print,"min(M_A)=",minA,", at ", time_string(t[maloc])
+
+
+w=reverse(sort(AlfvenFdiff))
+foreach el,w[0:40] do print,Alfven[el]," , ",AlfCalc[el] ," , ",AlfvenFdiff[el]," , ",time_string(t[el])
+;rhandfitvsmfmsplot
+mflowplot
+;exit
+
+store_data,"Mfms2",data={x:datVN.x,y:Mfms2,ytitle:['$M_{fms}$'],YN:['$M_{fms}$'], fn:["Mfms2"],  binsize:[1.],radian:[0],degree:[0]}
+get_data,'Mfms',data=datMfms
+Mfms=datMfms.y
+p1=scatterplot(Mfms2,Mfms2/Mfms,ytitle='Mfms2/Mfms1',xtitle='Mfms2')
+p1.save,'Documents/mfms2vmfms.png'
+
+get_data,'Mflow',data=datMflow
+Mflow=datMflow.y
+FMflow=Mflow/Mcrit
+store_data,"FMflow",data={x:datVN.x,y:FMflow,ytitle:['$M_{flow}/M_{crit}$'],YN:['$M_{fms}/M_{crit}$'], fn:["FMflow"],  binsize:[1.],radian:[0],degree:[0]}
+
+get_data,'Ls',data=datLS
+LS=datLS.y
+dustdist=180-Abs(180-abs(285-LS))
+store_data,"dustdist",data={x:datLS.x,y:dustdist,ytitle:['degrees from $L_S=285$ dust storm peak'],YN:['dust storm distance'], fn:["dustdist"],  binsize:[10.],radian:[0],degree:[1]}
+
+
+get_data,'Vumag',data=datV
+get_data,'N_ion',data=datNion
+vumag=datV.y *1000. ;converting from km/s->m/s
+N_ion=datNion.y*10.^6
+PdynSI=!const.mp *N_ion *vumag^2 /2
+
+store_data,"P_ion_dynSI",data={x:datV.x,y:PdynSI,ytitle:['$0.5 m_p n_{ion} (v^{ion}_{up})^2 [kg m^{-1}s^{-2}]$ '],YN:['Dynamic ion pressure'], fn:["PdynSI"],  binsize:[.1],radian:[0],degree:[0]}
+
+mp=938*10.^6
+Pdyn_EV=.5*mp*(vumag/!const.c)^2 *datNion.y /10.^3 ;in keV cm^-3
+store_data,"P_ion_dynEV",data={x:datV.x,y:Pdyn_EV,ytitle:['$0.5 m_p n_{ion} (v^{ion}_{up})^2 [keV cm^{-3}]$ '],YN:['Dynamic ion pressure'], fn:["PdynEV"],  binsize:[.1],radian:[0],degree:[0]}
+
+get_data,'Velocity_N',data=datVN
+VN=datVN.y *1000
+
+PdynSI_N=!const.mp *N_ion *VN^2 /2
+
+store_data,"P_ion_normal_dynSI",data={x:datV.x,y:PdynSI_N,ytitle:['$0.5 m_p n_{ion} (\langle {\bf v}^{ion}\rangle_U\cdot {\bf n}_{avg})^2 [kg m^{-1}s^{-2}]$ '],YN:['Shockward Dynamic ion pressure'], fn:["PdynSI_N"],  binsize:[.1],radian:[0],degree:[0]}
+
+mp=938*10.^6
+Pdyn_EV=.5*mp*(VN/!const.c)^2 *datNion.y /10.^3 ;in keV cm^-3
+store_data,"P_ion_dynEV_N",data={x:datV.x,y:Pdyn_EV,ytitle:['$0.5 m_p n_{ion} (\langle {\bf v}^{ion}\rangle_U\cdot {\bf n}_{avg})^2 [keV cm^{-3}]$ '],YN:['Shockward Dynamic ion pressure'], fn:["PdynEV_N"],  binsize:[.1],radian:[0],degree:[0]}
+
+
+get_data,'Ls',data=datLS
+get_data,'OrbitTheta',data=datOTH
+LS=datLS.y
+N=numel(LS)
+R_mars = 3389.5
+semimajor = 227.956*10.^6.
+ecc = 0.0935
+semilat = semimajor*(1 - ecc^2)
+OTHd=(LS-70.-180.) MOD 360
+OTHr=OTHd*!pi/180.
+datOTH.y=OTHr
+store_data,'OrbitTheta',data=datOTH
+SOLDIST=semilat/(1+ecc*cos(OTHr))
+get_data,'SolDist',data=DATSOLDIST
+DATSOLDIST.y=SolDist
+store_data,'SolDist',data=DATSOLDIST
+soldistnorm=soldist/semimajor
+tplot_element,'SolDistNorm','y',soldistnorm,/add
+
+get_data,'Ls',data=datLS
+LS=datLS.y
+x=datLS.x
+solsticedist=180-Abs(180-abs(270-LS))
+store_data,"solsticedist",data={x:datLS.x,y:solsticedist,ytitle:['degrees from $L_S=270^\circ$ southern summer solstice'],YN:['Summer Solstice distance'], fn:["solsticedist"],  binsize:[10.],radian:[0],degree:[1]}
+standdegdist=180-Abs(180-abs(273-LS))
+store_data,"standdegdist",data={x:datLS.x,y:standdegdist,ytitle:['degrees from $L_S=273^\circ$ standoff maximum at $L_S=273^\circ$)'],YN:['max standoff angular distance'], fn:["standdegdist"],  binsize:[10.],radian:[0],degree:[1]}
+
+
+periheliondist=180-Abs(180-abs(250-LS))
+store_data,"periheliondist",data={x:datLS.x,y:periheliondist,ytitle:['degrees from $L_S=273^\circ$ perihelion ($L_S=250^\circ$)'],YN:['perihelion angular distance'], fn:["periheliondist"],  binsize:[10.],radian:[0],degree:[1]}
+
+.run sesb2b1varplot
+sesb2b1varplot
+get_data,"solsticedist",data=dat
+solsticedist=dat.y
+N=numel(solsticedist)
+solst=fltarr(N)
+solst+=1*(solsticedist lt 45)
+solst+=2*(solsticedist ge 45 and solsticedist lt 90)
+solst+=3*(solsticedist ge 90 and solsticedist lt 135)
+solst+=4*(solsticedist ge 135 and solsticedist lt 180)
+solst-=1
+store_data,'solsbins',data={x:dat.x,y:solst}
+
+get_data,"dustdist",data=dat
+dustdist=dat.y
+N=numel(dustdist)
+solst=fltarr(N)
+solst+=1*(dustdist lt 45)
+solst+=2*(dustdist ge 45 and dustdist lt 90)
+solst+=3*(dustdist ge 90 and dustdist lt 135)
+solst+=4*(dustdist ge 135 and dustdist lt 180)
+solst-=1
+store_data,'dustbins',data={x:dat.x,y:solst}
+
+get_data,"periheliondist",data=dat
+dustdist=dat.y
+N=numel(dustdist)
+solst=fltarr(N)
+solst+=1*(dustdist lt 45)
+solst+=2*(dustdist ge 45 and dustdist lt 90)
+solst+=3*(dustdist ge 90 and dustdist lt 135)
+solst+=4*(dustdist ge 135 and dustdist lt 180)
+solst-=1
+store_data,'peribins',data={x:dat.x,y:solst}
+
+.run projectorplot3
+projectorplot3
+get_data,'shock0Acc',data=dat;
+
+minAcc=1-dat.y
+expAcc=10^(dat.y-1)
+store_data,'1minShock0Acc',data={x: dat.x ,y: minAcc ,ytitle:[ '1-$N_{SN}^{AVG}\cdotN_{Conic}$' ], YN:[ '1-$N_{SN}^{AVG}\cdotN_{Conic}$' ], fn:[ "minshock0acc" ], binsize:[ .1 ], radian:[0],degree:[0]}
+store_data,'exp10Shock0Acc',data={x: dat.x ,y: expAcc ,ytitle:[ '10^($N_{SN}^{AVG}\cdotN_{Conic}$-1)' ], YN:[ '10^($N_{SN}^{AVG}\cdotN_{Conic}$-1)' ], fn:[ "exp10shock0acc" ], binsize:[ .1 ], radian:[0],degree:[0]}
+get_data,'shock0Acc',data=dat;
+Acc=dat.y
+minAcc=1-dat.y
+dop70=1*(Acc gt .7)
+store_data,'dop70',data={x:dat.x,y:dop70,YN:'dop>.7',fn:'dop70'}
+dop75=1*(Acc gt .75)
+store_data,'dop75',data={x:dat.x,y:dop75,YN:'dop>.75',fn:'dop75'}
+dop80=1*(Acc gt .8)
+store_data,'dop80',data={x:dat.x,y:dop80,YN:'dop>.8',fn:'dop80'}
+dop85=1*(Acc gt .85)
+store_data,'dop85',data={x:dat.x,y:dop85,YN:'dop>.85',fn:'dop85'}
+dop90=1*(Acc gt .9)
+store_data,'dop90',data={x:dat.x,y:dop90,YN:'dop>.9',fn:'dop90'}
+dop92=1*(Acc gt .92)
+store_data,'dop92',data={x:dat.x,y:dop92,YN:'dop>.92',fn:'dop92'}
+dop94=1*(Acc gt .94)
+store_data,'dop94',data={x:dat.x,y:dop94,YN:'dop>.94',fn:'dop94'}
+dop95=1*(Acc gt .95)
+store_data,'dop95',data={x:dat.x,y:dop95,YN:'dop>.95',fn:'dop95'}
+shockaggragateplotter,8,43,magn=160,ct=25,/zlog,sub=168
+get_data,'Buvec',data=datBuvec
+Buvec=datBuvec.y
+t=datBuvec.x
+Bumag=t*0.0
+for i=0,numel(t)-1 do Bumag[i]=Sqrt(total(Buvec[i,*]^2))
+store_data,'Bumag',data={x: t ,y: Bumag ,ytitle:[ '$|\bf{B\rm}^{Measured}_{Upstream}|$ [nT]' ], YN:[ '$|{\bf B\rm}^{Measured}_{Upstream}|$' ], fn:[ 'Bumag' ], binsize:[ 2. ], radian:[0],degree:[0]}
+tplot_element,'Bumag','y',Bumag
+get_data,'upM',data=datUpM
+upM=datUpM.y
+upMmagfracdiff=fracdiff(upM,Bumag)
+store_data,'BumagupMfdiff',data={x: datUpM.x ,y: upMmagfracdiff ,ytitle:[ 'diff$ |\bf{ B}\rm|^{Measured}_{Upstream}, |{\bf B\rm}^{Measured}_{Upstream}|$' ], YN:[ '%diff $|\bf{ B\rm}|^{Meas}_{Up}, +|{\bf B\rm}^{Meas}_{Up}|$ ' ], fn:[ 'upMBumagfdiff' ], binsize:[ .1 ], radian:[0],degree:[0]}
+
+tplot_element,'down','y',down
+tplot_element,'downM','y',downM
+tplot_element,'downM','x',t
+downfdiff=fracdiff(down,downM)
+store_data,'downfdiff',data={x: t ,y: downfdiff ,ytitle:[ '%diff $B^{FIT}_{DOWN},B^{Meas}_{DOWN}$' ], YN:[ '%diff $B^{FIT}_{DOWN},B^{Meas}_{DOWN}$ ' ], fn:[ 'upMBumagfdiff' ], binsize:[ .1 ], radian:[0],degree:[0]}
+aggramissingadd
+
+
+get_data,'n_conic_cyl',data=datNCyl
+t=datNCyl.x
+NconicCyl=datNCyl.y
+get_data,'POSCONIC',data=datPOSCON
+PosCyl=datPOSCON.y
+ConRho=PosCyl[*,0]
+NConRho=NconicCyl[*,0]
+N=numel(datNCyl.x)
+tplot_element,'Y_MSO','y',YMSO
+tplot_element,'Z_MSO','y',ZMSO
+Azimuth=atan(YMSO,ZMSO)
+store_data,'Azimuth',data={x:t,y:Azimuth,ytitle:'$\phi_{MSO} [rad]$',YN:'Azimuthal Angle',fn:'Azimuth',degree:[0],radian:[1],vec:[0],binsize:[10*!pi/180]}
+tplot_element,'X_MSO','y',XMSO
+tplot_element,'Y_MSO','y',YMSO
+tplot_element,'Z_MSO','y',ZMSO
+tplot_element,'thetaBconic','x',t
+tplot_element,'alt','y',alt
+
+
+TH_MSO=atan(SQRT(XMSO^2+YMSO^2),ZMSO)
+store_data,'TH_MSO',data={x:t,y:TH_MSO,ytitle:'$\theta_{MSO}=atan(\sqrt{X^2+Y^2}/Z)$ [rad]',YN:'LatMSO',fn:'latMSO',degree:[0],radian:[1],vec:[0],binsize:[10*!pi/180]}
+
+
+ConX=NconicCyl[*,2]
+conY=0.0*conx
+conz=cony
+for i=0,N-1 do conY[i]=NConRho[i]*cos(Azimuth[i])
+for i=0,N-1 do conZ[i]=NConRho[i]*sin(Azimuth[i])
+n_conic=fltarr(N,3)
+NN=Sqrt(ConX^2+conY^2+conZ^2)
+for i=0,N-1 do conX[i]/=NN[i]
+for i=0,N-1 do conY[i]/=NN[i]
+for i=0,N-1 do conZ[i]/=NN[i]
+n_conic[*,0]=ConX
+n_conic[*,1]=ConY
+n_conic[*,2]=ConZ
+store_data,'n_conic',data={x:t,y:n_conic,ytitle:"Conic normal",YN:'Conic Normal',fn:'N_CONIC',binsize:[.1],degree:0,radian:0,vec:[1]}
+
+
+get_data,'Buvec',data=datBuvec
+Buvec=datBuvec.y
+get_data,'n_conic',data=datNconic
+n_conic=datNconic.y
+N=numel(datNconic.x)
+thCon=fltarr(N)
+Buconic=dotproduct(Buvec,n_conic)
+Bun=fltarr(N)
+t=datBuvec.x
+for i=0,N-1 do Bun[i]=sqrt(total(Buvec[i,*]^2))
+Bunorm=Buconic/Bun
+for i=0,N-1 do thCon[i]=acos(Buconic[i]/Bun[i])
+help,thCon
+store_data,'thetaBconicRad',data={x:t,y:thCon,ytitle:'$\theta_{B Nconic}=acos(\bf B_U\cdotN_{conic}\rm/|B_U|)$ [rad]',YN:'Conic Shock Angle',fn:'thConRad',degree:[0],radian:[1],vec:[0],binsize:(!pi*5/180)}
+thConD=thCon*180/!pi
+thConDn=90-abs(90-thConD)
+store_data,'thetaBconic',data={x:t,y:thConDn,ytitle:'$\theta_{B Nconic}=acos(\bf B_U\cdotN_{conic}\rm/|B_U|)$ [deg]',YN:'Conic Shock Angle',fn:'thCon',degree:[1],radian:[0],vec:[0],binsize:[5]}
+
+get_data,'Velocity_fine',data=datVuvec
+Vuvec=datVuvec.y
+get_data,'n_conic',data=datNconic
+n_conic=datNconic.y
+N=numel(datNconic.x)
+thVCon=fltarr(N)
+Vuconic=dotproduct(Vuvec,n_conic)
+Vun=fltarr(N)
+t=datBuvec.x
+for i=0,N-1 do Vun[i]=sqrt(total(Vuvec[i,*]^2))
+for i=0,N-1 do thVCon[i]=acos(Vuconic[i]/Vun[i])
+help,thVCon
+store_data,'thetaVconicRad',data={x:t,y:thVCon,ytitle:'$\theta_{V Nconic}=acos(\bf V_U\cdot N_{conic}\rm/|V_U|)$ [rad]',YN:'Velocity Conic Shock Angle',fn:'thVConRad',degree:[0],radian:[1],vec:[0],binsize:(!pi*5/180)}
+thVConD=thVCon*180/!pi
+thVConDn=90-abs(90-thVConD)
+store_data,'thetaVconic',data={x:t,y:thVConDn,ytitle:'$\theta_{V Nconic}=acos(\bf V_U\cdotN_{conic}\rm/|V_U|)$ [deg]',YN:'Velocity Conic Shock Angle',fn:'thVCon',degree:[1],radian:[0],vec:[0],binsize:[5]}
+
+store_data,'V_conic',data={x:t,y:Vuconic,ytitle:'$\langle\bf V\rm\rangle_U\cdot \bf N\rm_{conic}$',YN:'$V_{CONIC}$',fn:'Vconic',vec:[0],degree:[0],radian:[0],binsize:[100]}
+
+tplot_element,'thetaBconic','y',thConDn
+tplot_element,'SoundSpeed','y',Cs
+tplot_element,'Alfven','y',VA
+thConN=thConDn*!pi/180
+fmsConic=Sqrt( .5*  (VA^2+Cs^2+sqrt((VA^2+Cs^2)^2-4*VA^2*CS^2*(cos(thConN)^2) ) ))
+MfmsConic=abs(Vuconic)/fmsConic
+store_data,'Mfms_conic',data={x:t,y:MfmsConic,ytitle:'$M_{fms}$ using Conic',YN:'$M_{fms}$ using Conic',fn:'MfmsConic',binsize:[.5],degree:[0],radian:[0],vec:[0]}
+store_data,'MachAlfvenConic',data={x: t ,y: abs(Vuconic)/VA ,ytitle:[ '$M_{Alfven}$ using conic' ], YN:[ 'Conic $M_{Alfven}$' ], fn:[ 'M_A-Conic' ], binsize:[ 1. ], radian:[0],degree:[0]}
+
+
+
+tplot_element,'beta','y',betas
+McritConic=fltarr(N)
+for i=0, N-1 do McritConic[i]=calccritmachnumber(thConN[i],betas[i])
+store_data,"McritConic",data={x:t,y:McritConic,ytitle:['$M_{crit}$ using Conic'],YN:['Conic Critical Mach Number'], fn:['McritConic'],  binsize:[.1],radian:[0],degree:[0]}
+
+store_data,"FMconic",data={x:t,y:MfmsConic/McritConic,ytitle:'$M_{fms}/M_{crit}$ using $N_{conic}$',YN:['Conic Critical Ratio'], fn:["Crit_Ratio-Conic"],  binsize:[1.],radian:[0],degree:[0],vec:[0]}
+
+tplot_element,'Mfms_conic','y',MfmsConic
+tplot_element,'beta','y',betas
+tplot_element,'thetaBconic','y',thConDn
+tplot_element,'thetaBconic','x',t
+thConN=thConDn*!pi/180
+N=numel(t)
+B2B1_RH_conic=fltarr(N)
+for i=0,N-1 do B2B1_RH_conic[i]=rh_magnetic_jump(Mfms=MfmsConic[i],bta=betas[i],theta=thConN[i])
+store_data,'B2B1_RHconic',data={x: t ,y: B2B1_RH_conic ,ytitle:[ '$(B_D/B_U)_{RH}$ using conic' ], YN:[ 'Conic and RH Predicted Magnetic Jump' ], fn:[ "B2B1_RH-conic" ], binsize:[ .5 ], radian:[0],degree:[0],vec:[0]}
+
+
+tplot_element,'B2B1_RH','y',B2B1_RH
+RHRHCfdiff=fracdiff(B2B1_RH,B2B1_RH_conic)
+store_data,'RHRHCfdiff',data={x: t ,y: RHRHCfdiff ,ytitle:[ '$B_d$/$B_u$ % diff(RH; RH with conic)' ], YN:[ 'RH RH-conic Magnetic jump % difference' ], fn:[ "rankineconic_rankine_B2B1_percentdiff" ], binsize:[ .1 ], radian:[0],degree:[0]}
+
+tplot_element,43,'y',B2B1_Fit
+
+B2B1RHCfdiff=fracdiff(B2B1_Fit,B2B1_RH_conic)
+store_data,'B2B1Cfdiff',data={x: t ,y: B2B1RHCfdiff ,ytitle:[ '$B_d$/$B_u$ % diff(Fit; RH-conic)' ], YN:[ 'RH-conic Fit Magnetic jump % difference' ], fn:[ "fit_rankineconic_B2B1_percentdiff" ], binsize:[ .1 ], radian:[0],degree:[0]}
+
+B2B1fdiff=fracdiff(B2B1_Fit,B2B1_RH)
+store_data,'B2B1fdiff',data={x: t ,y: B2B1fdiff ,ytitle:[ '$B_d$/$B_u$ % diff(Fit; RH)' ], YN:[ 'RH Fit Magnetic jump % difference' ], fn:[ "fit_rankine_B2B1_percentdiff" ], binsize:[ .1 ], radian:[0],degree:[0]}
+
+tplot_element,'Vdvec','y',vdvec
+tplot_element,'N_SN','y',N_SN
+tplot_element,'thetaBconic','x',t
+Vd_N=dotproduct(vdvec,N_SN)
+store_data,'Vd_N',data={x:t,y:Vd_N,ytitle:'$\langle\bf V\rm\rangle_D\cdot \bf N\rm_{AVG}$',YN:'$V_{D N}$',fn:'VdownN',vec:[0],degree:[0],radian:[0],binsize:[100]}
+
+tplot_element,'Vdvec','y',vdvec
+tplot_element,'n_conic','y',n_conic
+
+Vdconic=dotproduct(vdvec,N_conic)
+store_data,'Vdconic',data={x:t,y:Vdconic,ytitle:'$\langle\bf V\rm\rangle_D\cdot \bf N\rm_{CONIC}$',YN:'$V_{D CONIC}$',fn:'Vdconic',vec:[0],degree:[0],radian:[0],binsize:[100]}
+
+tplot_element,'Velocity_N','y',VuN
+VdN=Vd_N
+tplot_element,11,'y',thNB
+tplot_element,75,'y',MA
+bb=2 *Cos(thNB)^2 /MA^2
+yy=VdN/VuN
+dl=(bb -1)^2/(bb-yy)^2
+
+RH2=SQRT(Cos(thNB)^2+dl*Sin(thNB)^2)
+
+store_data,'B2B1_RHv',data={x:t,y:RH2,ytitle:'$(B_D/B_U)^{RH predicted}_{with Vd}',YN:'$RH Mag Jump from Velocities$',fn:'B2B1RHv',vec:[0],degree:[0],radian:[0],binsize:[.5]}
+
+
+
+tplot_element,'V_conic','y',VuC
+tplot_element,'Vdconic','y',vdconic
+VdC=Vdconic
+tplot_element,'thetaVconicRad','y',thCon
+tplot_element,'MachAlfvenConic','y',MAconic
+bb=2 *Cos(thCon)^2 /MAconic^2
+yy=VdC/VuC
+dl=(bb -1)^2/(bb-yy)^2
+
+RH2con=SQRT(Cos(thCon)^2+dl*Sin(thCon)^2)
+
+store_data,'B2B1_RHvconic',data={x:t,y:RH2con,ytitle:'$(B_D/B_U)^{conic RH}_{with Vd}',YN:'$Conic RH Mag Jump from Velocities$',fn:'B2B1RHvconic',vec:[0],degree:[0],radian:[0],binsize:[.5]}
+
+
+tplot_element,'thetaBconic','y',thConDn
+N=numel(thConDn)
+wQuasiperpsC=where(thConDn ge 45,ncperps,complement=wQuasiparsC)
+QuasiperpsC=fltarr(N)
+QuasiparsC=fltarr(N)
+QuasiperpsC[wQuasiperpsC]=1
+QuasiparsC[wQuasiparsC]=1
+store_data,'QuasiperpConic',data={x:t,y:QuasiperpsC,YN:'Conic $Q_\perp$',fn:'Qperpconic'}
+store_data,'QuasiparConic',data={x:t,y:QuasiparsC,YN:'Conic $Q_{||}$',fn:'Qparconic'}
+
+tplot_element,'Vdconic','y',VdC
+tplot_element,'thetaBconic','x',t
+mxVd=max(VdC,mxlc)
+bdt=t[mxlc]
+
+tplot_element,10,'y',TH
+tplot_element,'thetaBconic','y',thCon
+
+THdiff=thCon-TH
+store_data,'THdiff',data={x:t,y:THdiff,ytitle:'$\theta_{B Conic}-\theta_{BN}$ [deg]',YN:'Theta Difference',fn:'thdiff',binsize:5,vec:[0],degree:[0],radian:[0]}
+store_data,'THfdiff',data={x:t,y:fracdiff(TH,thCon),ytitle:'$% diff(\theta_{B Conic},\theta_{BN})$',YN:'Theta Percent Difference',fn:'thfdiff',binsize:5,vec:[0],degree:[0],radian:[0]}
+store_data,'THdiffAbs',data={x:t,y:abs(THdiff),ytitle:'abs($\theta_{B Conic}-\theta_{BN})$ [deg]',YN:'Theta Difference',fn:'thdiffAbs',binsize:5,vec:[0],degree:[0],radian:[0]}
+
+tplot_element,'B2B1fdiff','y',B2B1fdiff
+tplot_element,'B2B1Cfdiff','y',B2B1Cfdiff
+RHfdiffFrac=B2B1fdiff/B2B1Cfdiff
+store_data,'RHfdiffFrac',data={x:t,y:RHfdiffFrac,ytitle:'B2B1fdiff/B2B1Cfdiff',YN:'B2B1fdiff/B2B1Cfdiff (>1 means better conic, <1 means better $N_{avg}$',fn:'RHfdiffFrac',vec:[0],degree:[0],radian:[0],binsize:[.1]}
+
+tplot_element,'Bdvec','y',Bdvec
+tplot_element,'Buvec','y',Buvec
+tplot_element,'N_SN','y',Navg
+
+Butvec=crossprod(Navg,crossprod(Navg,Buvec))
+Bdtvec=crossprod(Navg,crossprod(Navg,Bdvec))
+ButMag=sqrt(total(Butvec^2,2))
+BdtMag=sqrt(total(Bdtvec^2,2))
+tplot_element,'thetaBconic','x',t
+BtanJump=BdtMag/ButMag
+store_data,'BupTan',data={x:t,y:ButMag,ytitle:'$(\langle\bf B\rm\rangle_U)_{TAN}$ [nT]',YN:'$(\langle\bf B\rm\rangle_U)_{TAN}$',fn:'BupTAN',binsize:2,radian:[0],degree:[0],vec:0}
+store_data,'BdownTan',data={x:t,y:BdtMag,ytitle:'$(\langle\bf B\rm\rangle_D)_{TAN}$ [nT]',YN:'$(\langle\bf B\rm\rangle_D)_{TAN}$',fn:'BdownTAN',binsize:2,radian:[0],degree:[0],vec:0}
+store_data,'BTanJump',data={x:t,y:BtanJump,ytitle:'$(\langle\bf B\rm\rangle_D)_{TAN}/(\langle\bf B\rm\rangle_U)_{TAN}$ [nT]',YN:'$B_{TAN}$ Jump',fn:'BTANJUMP',binsize:2,radian:[0],degree:[0],vec:0}
+
+
+tplot_element,'Mfms','y',Mfms
+tplot_element,10,'y',TH
+tplot_element,12,'y',betas
+N=numel(TH)
+M1=fltarr(N)
+beta1=fltarr(N)
+TH1=fltarr(N)
+TH*=!pi/180
+rh_recalculate,Mfms,th,betas,m1,th1,beta1
+
+p1=scatterplot(Mfms,M1,sym_size=.5)
+p2=scatterplot(TH,TH1,sym_size=.5)
+RH_parameters,Mfms,th,betas,a,b,c,d,y,delta
+BtanJumpRH=sqrt(delta)
+store_data,'BtanJumpRH',data={x:t,y:BtanJumpRH,ytitle:'$(B^{TAN}_D/B^{TAN}_U)_{RH}$',YN:'$RH calculated B_{TAN}$ Jump',fn:'BTANJUMP-RH',binsize:2,radian:[0],degree:[0],vec:0}
+
+BTANJUMPFDIFF=fracdiff(BtanJumpRH,BtanJump)
+store_data,'BtanJumpFdiff',data={x:t,y:BTANJUMPFDIFF,ytitle:'% diff$(B^{TAN}_D/B^{TAN}_U)_{RH}, (\langle\bf B\rm\rangle_D)_{TAN}/(\langle\bf B\rm\rangle_U)_{TAN}$',YN:'$% difference Measured, calculated B_{TAN}$ Jump',fn:'BTANJUMP-RH-FDIFF',binsize:2,radian:[0],degree:[0],vec:0}
+
+m_p=938.0*10.0^6
+tplot_element,'Tproton','y',Tproton
+tplot_element,'Tproton','x',t
+N=numel(t)
+CspeedI=SQRT(( 5./3 *Tproton )/m_p   )*!const.c/1000
+tplot_element,11,'y',thNB
+tplot_element,'Alfven','y',VA
+store_data,'Cspeed_ion',data={x:t,y:CspeedI,ytitle:'$C_S^{ion} [km/s]$',YN:'Ion Sound Speed',fn:'CsIon',binsize:'100',radian:[0],degree:[0],vec:0}
+fmsIon=Sqrt( .5*  (VA^2+CspeedI^2+sqrt((VA^2+CspeedI^2)^2-4*VA^2*CSpeedI^2*(cos(thNB)^2) ) ))
+
+tplot_element,'Velocity_N','y',VuN
+Mfms_Ion=abs(VuN)/fmsIon
+store_data,'Mfms_ion',data={x:t,y:Mfms_ion,ytitle:'$M_{fms}$ for ions only',YN:'$Ion M_{fms}$',fn:'MfmsIon',binsize:[.5],degree:[0],radian:[0],vec:[0]}
+
+tplot_element,13,'y',betaI
+N=numel(betaI)
+B2B1_RH_ion=dblarr(N)
+
+thNB=!PI/2 -abs(!pi/2 -thNB)
+
+for i=0,N-1 do B2B1_RH_ion[i]=rh_magnetic_jump(Mfms=Mfms_ion[i],bta=betaI[i],theta=thNB[i])
+store_data,'B2B1_RH_ion',data={x: t ,y: B2B1_RH_ion ,ytitle:[ '$(B_D/B_U)_{RH}$ using only ions' ], YN:[ 'Ion only RH Predicted Magnetic Jump' ], fn:[ "B2B1_RH-ion" ], binsize:[ .5 ], radian:[0],degree:[0],vec:[0]}
+
+tplot_element,43,'y',B2B1fit
+B2B1fdiff_i=fracdiff(B2B1fit,B2B1_RH_ion)
+tplot_element,'B2B1fdiff_i','y',B2B1fdiff_i,/add
+
+McritIon=fltarr(N)
+for i=0, N-1 do McritIon[i]=calccritmachnumber(thNB[i],betaI[i])
+store_data,"Mcrit_ion",data={x:t,y:McritIon,ytitle:['$M_{crit}$ using only ions'],YN:['ion Critical Mach Number'], fn:['McritIon'],  binsize:[.1],radian:[0],degree:[0]}
+
+FM_ion=Mfms_ion/McritIon
+
+store_data,"FM_ion",data={x:t,y:FM_ion,ytitle:'$M_{fms}/M_{crit}$ using only ions',YN:['Ion Critical Ratio'], fn:["Crit_Ratio-ion"],  binsize:[1.],radian:[0],degree:[0],vec:[0]}
+
+tplot_element,'Mfms_ion','y',Mfms_Ion,/add
+
+tplot_element,'P_ion_dynSI','y',Pdyn
+
+
+tplot_element,78,'y',Vuvec
+help,Vuvec
+tplot_element,'Buvec','y',Buvec
+thVB=vecanglecalc(Vuvec,Buvec,/deg,/q1)
+store_data,'thVBnd',data={x:t,y:thVB,ytitle:'$\theta_{VB}$ [deg]',YN:'$\theta_{VB}$',fn:'thVB',binsize:[5],radian:[0],degree:[1],vec:[0]}
+
+
+tplot_element,'N_SN','y',N_SN
+tplot_element,'Bdvec','y',Bdvec
+
+thB2N=vecanglecalc(N_SN,Bdvec)
+store_data,'thB2N_rad',data={x:t,y:thB2N,ytitle:'$\theta_{B_2 N}$ [rad]',YN:'$\theta_{B_2 N}$',fn:'thB2N-rad',binsize:[5*!pi/180],radian:[1],degree:[0],vec:[0]}
+thB2N=vecanglecalc(N_SN,Bdvec,/deg,/q1)
+store_data,'thB2N',data={x:t,y:thB2N,ytitle:'$\theta_{B_2 N}$ [deg]',YN:'$\theta_{B_2 N}$',fn:'thB2N',binsize:[5],radian:[0],degree:[1],vec:[0]}
+
+
+tplot_element,'Mfms','y',Mfms
+tplot_element,10,'y',TH
+tplot_element,12,'y',betas
+N=numel(TH)
+M1=dblarr(N)
+beta1=dblarr(N)
+TH1=dblarr(N)
+TH*=!pi/180
+rh_recalculate,Mfms,th,betas,m1,th1,beta1
+
+p1=scatterplot(Mfms,M1,sym_size=.5)
+p2=scatterplot(TH,TH1,sym_size=.5)
+RH_parameters,Mfms,th,betas,a,b,c,d,y,delta
+ThB2N_RH=acos(sqrt(b/(b+delta*c)))
+store_data,'thB2N_RHrad',data={x:t,y:thB2N_RH,ytitle:'RH predicted $\theta_{B_2 N}$ [rad]',YN:'RH predicted$\theta_{B_2 N}$',fn:'thB2N_RH-rad',binsize:[5*!pi/180.],radian:[1],degree:[0],vec:[0]}
+
+THB2N_RH=90-abs(90-180*THB2N_RH/!pi)
+store_data,'thB2N_RH',data={x:t,y:thB2N_RH,ytitle:'RH predicted $\theta_{B_2 N}$ [deg]',YN:'RH predicted$\theta_{B_2 N}$',fn:'thB2N_RH',binsize:[5],radian:[0],degree:[1],vec:[0]}
+
+
+tplot_element,'Vdvec','y',Vdvec
+
+tplot_element,'Bdvec','y',Bdvec
+thV2B2=vecanglecalc(Vdvec,Bdvec,/deg,/q1)
+store_data,'thV2B2nd',data={x:t,y:thV2B2,ytitle:'$\theta_{V_2B_2}$ [deg]',YN:'$\theta_{V_2B_2}$',fn:'thV2B2',binsize:[5],radian:[0],degree:[1],vec:[0]}
+
+tplot_element,'alt','y',alt
+tplot_element,'lat','y',lat
+lat=90-lat
+lat*=!pi/180
+Z_GEO=alt*cos(lat)
+RHO0_GEO=alt*sin(lat)
+store_data,'Z_GEO',data={x:t,y:Z_GEO,ytitle:'$Z_{GEO}$ [km]',YN:'$Z_{GEO}$',fn:'Zgeo',binsize:[500],vec:[0],radian:[0],degree:[0]}
+store_data,'RHO-0_GEO',data={x:t,y:RHO0_GEO,ytitle:'$\rho_{0}=Alt*sin(90-Lat)$ (GEO) [km]',YN:'$\rho_{0 GEO}$',fn:'RHO-0geo',binsize:[500],vec:[0],radian:[0],degree:[0]}
+
+yEmp=VdN/VuN
+store_data,'V2nV1n',data={x:t,y:yEmp,ytitle:'$V_{2n}/V_{1n}$',YN:'$V_{2n}/V_{1n}$',fn:'V2nV1n',binsize:[1],radian:[0],degree:[0],vec:[0]}
+
+tplot_element,75,'y',MA
+tplot_element,8,'y',Mfms
+tplot_element,10,'y',TH
+tplot_element,12,'y',betas
+THn=TH*!pi/180
+
+dlt=((cos(THn)/MA)^2 -1)^2 /((cos(THn)/MA)^2 -yEmp)^2
+RH_emp=SQRT(cos(THn)^2+dlt * sin(THn)^2)
+store_data,'B2B1_RH_emp',data={x: t ,y: RH_emp ,ytitle:[ '$(cos^2\theta_{BN}+\delta sin^2\theta_{BN})^{1/2}$ , $\delta=(cos^2\theta_{BN}/M_A^2 -1)^2/(cos^2\theta_{BN}/M_A^2 -V_{2n}/V_{1n})^2$' ], YN:[ 'Empirical RH Predicted Magnetic Jump' ], fn:[ "B2B1_RH-emp" ], binsize:[ .5 ], radian:[0],degree:[0],vec:[0]}
+g_i=5./3
+gbta=g_i*betas
+k0=1.+gbta/2. +sqrt(1+gbta^2/4. +gbta*(1.-2. *cos(THn)^2))
+
+MA_RH=Mfms*sqrt(.5*k0)
+
+store_data,'MA_RH',data={x:t,y:MA_RH,ytitle:'$M_A^{RH}$',YN:'$M_A^{RH}$',fn:'MA_RH',binsize:[1],radian:[0],degree:[0],vec:[0]}
+
+MAratio=MA_RH/MA
+store_data,'MAratio',data={x:t,y:MAratio,ytitle:'$M_A^{RH}/M_A$',YN:'$M_A^{RH}/M_A$',fn:'MAratio',binsize:[.2],radian:[0],degree:[0],vec:[0]}
+
+MAfdiff=fracdiff(MA_RH,MA)
+store_data,'MAfdiff',data={x:t,y:MAfdiff,ytitle:'$2|M_A^{RH}-M_A|/(M_A^{RH}+M_A)$',YN:'$2|M_A^{RH}-M_A|/(M_A^{RH}+M_A)$',fn:'MAfdiff',binsize:[.2],radian:[0],degree:[0],vec:[0]}
+
+print,max(MAratio)-1
+pritn,1-min(MAratio)
+tplot_element,13,'y',beta_i
+tplot_element,14,'y',beta_e
+
+
+
+rhlabel='$RH_{empirical}=(cos^2\theta_{BN}+\delta sin^2\theta_{BN})^{1/2} \n\n\n \delta=(cos^2\theta_{BN}/M_A^2 -1)^2/(cos^2\theta_{BN}/M_A^2 -V_{2n}/V_{1n})^2$'
+
+
+
+tplot_element,'Electron_Ion_fraction','y',NeNi
+tplot_element,14,'y',beta_e
+
+beta_eNi=beta_e/NeNi
+
+beta_Ni=beta_i+beta_eNi
+store_data,"beta_Ni",data={x:t,y:beta_Ni,ytitle:['$\beta$'],YN:['$\beta$'], fn:['beta_Ni'],  binsize:[.25],radian:[0],degree:[0],vec:[0]}
+
+store_data,"beta_electron_Ni",data={x:t,y:beta_eNi,ytitle:['$\beta_{e1}$'],YN:['Electron $\beta$'], fn:['beta_eNi'],  binsize:[.25],radian:[0],degree:[0]}
+
+N=numel(beta_e)
+MCrit2=dblarr(N)
+tplot_element,10,'y',TH
+THn=TH*!pi/180
+for i=0,N-1 do Mcrit2[i]=calccritmachnumber(thN[i],beta_Ni[i])
+store_data,"Mcrit_Ni",data={x:t,y:Mcrit2,ytitle:['$M_{crit}$'],YN:['Critical Mach Number'], fn:['McritNi'],  binsize:[.1],radian:[0],degree:[0]}
+tplot_element,8,'y',Mfms
+
+tplot_element,8,'y',Mfms
+tplot_element,69,'y',Cs
+tplot_element,70,'y',VA
+tplot_element,10,'y',TH
+THn=TH*!pi/180
+tplot_element,12,'y',betas
+
+
+
+N=numel(CS)
+RH_base=dblarr(N)
+for i=0,N-1 do RH_base[i]=rh_magnetic_jump(Mfms=Mfms[i],bta=betas[i],th=thn[i],sound=CS[i],Alfven=VA[i])
+pRH2=scatterplot(Mfms,TH,RGB_TABLE=25,magn=bytscl(RH_base),symbol='.',xtitle='$Mfms$',ytitle='$\theta_{BN}$')
+store_data,'B2B1_RH_base',data={x: t ,y: RH_base ,ytitle:[ '$[B_D/B_u]^{RH} (M_{fms},\theta_{BN},C_S,V_A)$' ], YN:[ 'RH Jump' ], fn:[ "B2B1_RH-base" ], binsize:[ .5 ], radian:[0],degree:[0],vec:[0]}
+
+
+tplot_element,13,'y',beta_i
+tplot_element,14,'y',beta_e
+tplot_element,8,'y',Mfms
+tplot_element,69,'y',Cs
+tplot_element,70,'y',VA
+tplot_element,10,'y',TH
+THn=TH*!pi/180
+tplot_element,12,'y',betas
+N=numel(TH)
+RH2=dblarr(N)
+for i=0,N-1 do RH2[i]=rh_magnetic_jump(Mfms=Mfms[i],bta=betas[i],th=thn[i],beta_I=beta_i[i],beta_e=beta_e[i])
+
+
+tplot_element,10,'x',t
+N=numel(t)
+w1=where(t lt time_double('2016-02-14'))
+w2=where(t lt time_double('2017-05-16'))
+w3=where(t lt time_double('2018-08-15'))
+tbins=make_array(N,value=4)
+tbins[w3]=3
+tbins[w2]=2
+tbins[w1]=1
+store_data,'time_quartiles',data={x:t,y:tbins,YN:'Time Quartiles',fn:'timequartiles'}

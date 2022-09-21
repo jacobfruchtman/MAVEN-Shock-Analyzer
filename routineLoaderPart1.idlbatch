@@ -1,0 +1,111 @@
+routineClock1=TIC("RoutineLoader1")
+.run plotDirector
+.run where_xyz
+.run numel
+;mvn_eph_subsol_pos,xs,data=datSubSol,/ls
+;mvn_mag_load,'l1_1sec'				;Load L1 B data at 1-sec cadence
+;tplot,"mvn_B_1sec"
+;mvn_mag_load,'l2_full'
+;spice_position_to_tplot,'MAVEN','MARS',frame = 'MSO'	;tplot variable for MAVEN position
+
+;options,'mvn_swics_velocity','SPICE_FRAME','MAVEN_SWIA'
+
+
+		;spice_vector_rotate_tplot,'mvn_swics_velocity','MAVEN_MSO',check = 'MAVEN_SC_BUS'
+						;rotate B to MSO
+
+		;options,'mvn_swifs_velocity','SPICE_FRAME','MAVEN_SWIA'
+		;spice_vector_rotate_tplot,'mvn_swifs_velocity','MAVEN_MSO',check = 'MAVEN_SC_BUS'
+						;rotate B to MSO
+
+		;options,'mvn_swifa_velocity','SPICE_FRAME','MAVEN_SWIA'
+		;spice_vector_rotate_tplot,'mvn_swifa_velocity','MAVEN_MSO',check = 'MAVEN_SC_BUS'
+						;rotate B to MSO
+
+
+		;options,'mvn_swica_velocity','SPICE_FRAME','MAVEN_SWIA'
+		;spice_vector_rotate_tplot,'mvn_swica_velocity','MAVEN_MSO',check = 'MAVEN_SC_BUS'
+						;rotate B to MSO
+
+
+
+
+;.run mvn_swia_regid
+;mvn_swia_regid
+.run arrMag
+.run absPlot
+.run arrayDims
+.run x2Greg
+.run vecsmoother
+.run numDerivative
+.run SpectroMoment
+.run flagClean
+.run threshFlag
+.run regidClean
+.run tanhfit
+.run atanh
+.run plotSmoother
+.run shockfitter
+.run shockfitter2
+.run vecsmoother
+.run curveFitter
+.run curveFitter3
+.run curveFitter4
+.run Fitloop
+.run curveFitter5
+.run tplotmultiplier
+.run updownFlag               
+.run shockNormCalc
+.run shockTester
+;.run Fitloop
+.run carttocyl
+.run overshooter
+.run BFITCOMBINER
+.run interpolator
+.run calcBeta
+.run Cal2Unix
+.run spikeFiller
+.run clearPlots
+.run flagexpand
+;clearPlots
+.run electronsetup
+.run ionsetup
+.run magneticsetup1
+.run intervalsetup
+.run saneAdjust
+arrMag("mvn_B_1sec",yt="Magnetic Field")
+arrMag("mvn_B_1sec_MAVEN_MSO",yt="Magnetic Field")
+;calc,'"Bmag_cad_Diff"="mvn_B_1sec_MAVEN_MSO_Mag"-"mvn_B_1sec_l2_MAVEN_MSO_Mag"'
+;calc,'"Bmag_cad_Diff"=("mvn_B_1sec_MAVEN_MSO_Mag"-"mvn_B_1sec_l2_MAVEN_MSO_Mag")*2/("mvn_B_1sec_MAVEN_MSO_Mag"+"mvn_B_1sec_l2_MAVEN_MSO_Mag")'
+;calc,"'pressure_proton'='tproton_Mag'*'mvn_swifs_density'"
+;tplot_element,'pressure_proton','ytitle','Pressure !C [eV/cm^3]',/add
+
+;plotSmoother,"swica_velocity_Mag",smoothType=6,width=5,newName="swica_v5" ;;THIS IS FOR SKIPPING OVER WEIRD FLUCTUATIONS IN SOLAR WIND: AVERAGING OVER WILL WASH OUT DROPS, LEAVING |v|_smooth >500
+									  ;;IN SOLAR WIND	
+;interpolator,'swics_v5'   
+
+;interpolator,'swica_v5'   
+
+;calc,'mvn_pressure_electron="mvn_swe_spec_dens"*"mvn_swe_spec_temp"'
+
+electronsetup
+ionsetup
+magneticsetup1
+plotfracdiff,'mvn_swifs_density_interpolated','mvn_swe_spec_dens_interpolated',newName="mvn_swe_swifs_dens_fracdiff"
+calc,"'mvn_swe_swifs_dens_diff'='mvn_swe_spec_dens_interpolated'-'mvn_swifs_density_interpolated'"
+
+calc,"'mvn_swifs_pressure_proton'='tproton_Mag_interpolated'*'mvn_swifs_density_interpolated'"
+;calc,"'mvn_swifa_pressure_proton'='tproton_Mag_interpolated'*'mvn_swifa_density_interpolated'"
+tplot_element,'mvn_swifa_pressure_proton','ytitle','Pressure !C [eV/cm^3]',/add
+tplot_element,'mvn_swifs_pressure_proton','ytitle','Pressure !C [eV/cm^3]',/add
+
+interpolator,"MAVEN_POS_(MARS-MSO)",newName="POS_interpolated_(MARS_MSO)"
+plotToCyl,"POS_interpolated_(MARS_MSO)",newName="POS_MSO_CYL"
+.run zerothBow
+zerothBow
+
+;calcBeta
+
+intervalsetup
+;tplot,"mvn_B_1sec_MAVEN_MSO_Mag mvn_pressure_electron mvn_swe_spec_pressure_electron"
+TOC,routineClock1

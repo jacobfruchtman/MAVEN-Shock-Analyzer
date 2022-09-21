@@ -1,0 +1,127 @@
+routineClock2=TIC("RoutineLoader2")
+;curveFitter,"mvn_B_1sec_MAVEN_MSO_Mag", newName="B_fitted" 
+;numDerivative,"B_fitted10",1,"mid"
+numDerivative,"Franken_fitted",1,"mid"
+;threshFlag,"B_fitted10deriv",-1,kindThresh=2,newName="shock_ascend"
+;threshFlag,"B_fitted10deriv",1,kindThresh=0,newName="shock_descend"
+threshFlag,"Franken_fittedderiv",-1,kindThresh=2,newName="shock_ascend"
+threshFlag,"Franken_fittedderiv",1,kindThresh=0,newName="shock_descend"
+
+                        
+calc,"'updown'='regid_cleaned_plotdescend'+'regid_cleaned_plotascend'"
+.run zerothBow
+;zerothBow
+;updownFlag,'B_fitted10deriv'
+;tplotmultiplier,"B_fitted10","updown","BF_shock" 
+;tplotmultiplier,"BF_shock","B_fitted10deriv_updown","BF_shocker"          
+;updownFlag,'Franken_fittedderiv'
+;tplotmultiplier,"Franken_fitted","updown","BF_shock" 
+;tplotmultiplier,"BF_shock","Franken_fittedderiv_updown","BF_shocker"          
+.run overshooter
+overshooter
+
+;tplot,'overshoot',/add
+;options,'overshoot','colors','r'
+;tplot,'bfo',/add
+;store_data,'bfo',data="mvn_B_1sec_MAVEN_MSO_Mag overshoot Franken_fitted"
+;tplotmultiplier,"BF_shocker","regid_cleaned_plotascend_flag","BF_shockA"
+;tplotmultiplier,"BF_shocker","regid_cleaned_plotdescend_flag","BF_shockD"
+calc,"'B_precision'='B_sec_smoothed'-'Franken_fitted'"
+.run solarWindAnalyzer
+solarWindAnalyzer,mnthresh=1.2
+.run dirupstreamindexer
+.run upstreamindexer
+
+
+;.run downstreamAnalyzer
+
+;downstreamAnalyzer
+
+upstreamindexer
+.run locateclosestconic
+locateclosestconic
+
+
+.run DotProduct 
+.run carttocyl
+.run carttocyl_instant
+.run shockNormCalc
+.run dotproduct 
+;shockNormCalc;,/manualDown
+
+;calc,"'B_perturb3'='mvn_B_1sec_MAVEN_MSO_Mag'-'B_fitted3'"
+;calc,"'B_perturb5'='mvn_B_1sec_MAVEN_MSO_Mag'-'B_fitted5'"
+;calc,"'B_diff12'='Franken_fitted'-'B_fitted12'"
+
+;tplot,[35,77,101,129,140,141]
+;@shockDebug.idlbatch
+;@normalPlots.idlbatch
+.run spikeFiller
+
+.run shockPlotter
+.run zerothTest
+.run zerothtest
+;RESTORE, 'dateData1.sav'
+;zerothtest
+;shockPlotter,currtime=currtime ;,startdate=startDate,ndays=ndays,currtime=currtime    
+
+;numDerivative,"rho60",1,"mid" 
+
+
+;tplot,"shocks",/add
+
+;tplot,['shocks','bff','shocks46789101112', 'bf46789101112']
+.run machNumCalcFine
+.run upstreamparametercalc
+upstreamparametercalc
+
+;calcBeta
+.run UpstreamMeasurer
+;UpstreamMeasurer,"Plasma_Beta"
+;spikeFiller,"Plasma_Beta_upstream"
+
+
+
+
+;machNumCalcFine
+
+
+;RESTORE, 'dateData1.sav'
+.run critMcalc
+;critMcalc,startdate=startdate,currtime=currtime
+
+
+.run machNumCalc2
+;machNumCalc2
+;shockPlotter
+;RESTORE, 'dateData1.sav'
+.run overshootcomparer
+;overshootcomparer,currtime=currtime,/pos;,/ver
+;options,'upstream_fit','colors','r'
+;store_data,"ups",data="mvn_B_1sec_Mag  B_up_average upstream_fit"
+
+;tplot_save,filename=startdate+"data"
+
+.run overVmachPlotter
+
+;overVmachPlotter
+;WAIT, 20
+
+;dayloaded++
+.run savedshocklister
+;savedshocklister
+;;;;;;;;;;AFTER.running everything, plot over vs mach
+.run overVmachPlotter
+
+;overVmachPlotter,/REMOVENEGATIVES,maxAllowed=10
+
+
+;tplot,['shocks','bff','shocks46789101112', 'bf46789101112','regid']
+;tplot,['bfo','regid']
+;tplot,'ups',/add
+;plotSmoother,"mvn_B_1sec_MAVEN_MSO_Mag",smoothtype=1,width=30,newName="B_halfmean"
+;plotSmoother,"mvn_B_1sec_MAVEN_MSO_Mag",smoothtype=-1,width=30,newName="B_halfstddev"
+;plotSmoother,"mvn_B_1sec_MAVEN_MSO_Mag",smoothtype=-2,width=30,newName="B_halfmedian"
+;tplot,['bff','B_halfmean','B_halfstddev','B_halfmedian']
+TOC,routineClock2
+colorflagger

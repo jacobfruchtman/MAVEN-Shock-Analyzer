@@ -1,0 +1,111 @@
+
+.run iterLoader
+
+.run mavenDataLoader
+.run clearPlots
+.run tplot_element
+
+.run daySaver
+.run linearStatRegress
+
+
+@routineCompiler.idlbatch
+.run errorsaver
+
+;.run savedshocklister
+;savedshocklister
+;exit
+.run savedshockChecker
+savedshockChecker
+;exit
+.run overVmachPlotter
+;overconcluder,/REMOVENEGATIVES,maxAllowed=20,/manual;,/load2,/nofix
+overvmachplotter,/REMOVENEGATIVES,maxAllowed=20,/nofix,/manual;,/load2,/nofix
+
+get_data,10,data=datTH
+get_data,69,data=datCs
+get_data,70,data=datVa
+Cs=datCs.y
+Va=datVa.y
+TH=datTH.y*!pi/180.
+sq2=(Cs^2+Va^2)^2-(2*Cs*Va*cos(TH))^2
+sq1=((Cs^2+Va^2)+sqrt(sq2))
+total(sq2 le 0)
+fms=sqrt(sq1*.5)
+get_data,'Velocity_N',data=datVN
+Mfms2=abs(datVN.y/fms)
+get_data,'FM',data=datFM
+get_data,'Mcrit',data=datMC
+Mcrit=datMC.y
+datFM.y*=Mfms2/datMC.y 
+datFM.fn='CritRatio2'
+store_data,'FM2',data=datFM
+
+tplot,"N_e N_p Electron_Ion_fraction Electron_Ion_fracdiff uDX"
+
+get_data,"N_ion",data=datNi
+get_data,"upM",data=datUpM
+
+N_i=datNi.y
+upM=datUpM.y
+AlfCalc=upM/Sqrt(!const.mp* 10.0^6 *N_i) /10.0^9
+;store_data,'Alfven',data={x: t ,y: Alfven ,ytitle:[ '$V_A$ [km/s]' ], YN:[ 'Alfven Speed' ], fn:[ 'vA' ], binsize:[ 100. ], radian:[0],degree:[0]}
+store_data,"AlfCalc",data={x:datUpM.x ,y: AlfCalc ,ytitle: '$V_A=B^{Meas}_{Up} \sqrt{\mu_0 m_p n^{ion}_{up}}$ [km/s]' , YN:'Calculated Alfven Speed', fn:'vAcalc', binsize:[ 100. ], radian:[0],degree:[0]}
+
+get_data,"Alfven",data=datAlf
+Alfven=datAlf.y
+AlfvenFdiff=fracdiff(Alfven,AlfCalc)
+
+store_data,"AlfenFdiff",data={x:datUpM.x ,y: Alfvenfdiff ,ytitle: '% diff($\langle B /\sqrt{\mu_0 \rho^{ion}}\rangle_{U}$,$\langle B\rangle_U /\sqrt{\mu_0 \langle\rho^{ion}\rangle_U}$)' , YN:'% diff(mean & calculated Alfven)', fn:'vAFdiff', binsize:[ .2 ], radian:[0],degree:[0]}
+
+get_data,'overshootAmplitude',data=datA;{x: t ,y: B2B1_Fit ,ytitle:[ '$B^{Fit}_{Downstream}$/$B^{Fit}_{Upstream}$' ], YN:[ "Fitted Magnetic Jump" ], fn:[ "DownstreamFitVsUpstreamFit" ], binsize:[ .2 ], radian:[0],degree:[0]}
+
+get_data,'B2B1fit',data=datB2B1;{x: t ,y: B2B1_Fit ,ytitle:[ '$B^{Fit}_{Downstream}$/$B^{Fit}_{Upstream}$' ], YN:[ "Fitted Magnetic Jump" ], fn:[ "DownstreamFitVsUpstreamFit" ], binsize:[ .2 ], radian:[0],degree:[0]}
+get_data,'overshootAmplitude',data=datA;{x: t ,y: B2B1_Fit ,ytitle:[ '$B^{Fit}_{Downstream}$/$B^{Fit}_{Upstream}$' ], YN:[ "Fitted Magnetic Jump" ], fn:[ "DownstreamFitVsUpstreamFit" ], binsize:[ .2 ], radian:[0],degree:[0]}
+
+A=datA.y
+Amean=mean(A)
+
+Avar=A-Amean/AMean
+
+
+store_data,'OverAmpvarMeanRatio',dat={x:datA.x ,y: Avar ,ytitle: '$|A_{fit}-\langle A_{fit}\rangle|/\langle A_{fit}\rangle$' , YN:'Fit Overshoot Amplitude variance/Mean Ratio', fn:'OverAmpvmr', binsize:[ .2 ], radian:[0],degree:[0]}
+
+B2B1=datB2B1.y
+B2B1mean=mean(B2B1)
+
+B2B1var=abs(B2B1-B2B1mean)/B2B1Mean
+
+
+store_data,'B2B1varMeanRatio',dat={x:datUpM.x ,y: B2B1var ,ytitle: '$|B^{Fit}_{Down}/B^{Fit}_{Up}-\langle B^{Fit}_{Down}/B^{Fit}_{Up}\rangle|/\langle B^{Fit}_{Down}/B^{Fit}_{Up}\rangle$' , YN:'Fit Magnetic Jump variance/Mean Ratio', fn:'B2B1vmr', binsize:[ .2 ], radian:[0],degree:[0]}
+
+get_data,'MachAlfven',DATA=datMA
+t=datUpM.x
+minA=min(datMA.y,maloc)
+print,"min(M_A)=",minA,", at ", time_string(t[maloc])
+
+
+w=reverse(sort(AlfvenFdiff))
+foreach el,w[0:40] do print,Alfven[el]," , ",AlfCalc[el] ," , ",AlfvenFdiff[el]," , ",time_string(t[el])
+;rhandfitvsmfmsplot
+mflowplot
+;exit
+
+store_data,"Mfms2",data={x:datVN.x,y:Mfms2,ytitle:['$M_{fms}$'],YN:['$M_{fms}$'], fn:["Mfms2"],  binsize:[1.],radian:[0],degree:[0]}
+get_data,'Mfms',data=datMfms
+Mfms=datMfms.y
+p1=scatterplot(Mfms2,Mfms2/Mfms,ytitle='Mfms2/Mfms1',xtitle='Mfms2')
+p1.save,'Documents/mfms2vmfms.png'
+
+get_data,'Mflow',data=datMflow
+Mflow=datMflow.y
+FMflow=Mflow/Mcrit
+store_data,"FMflow",data={x:datVN.x,y:FMflow,ytitle:['$M_{flow}/M_{crit}$'],YN:['$M_{fms}/M_{crit}$'], fn:["FMflow"],  binsize:[1.],radian:[0],degree:[0]}
+
+get_data,'Ls',data=datLS
+LS=datLS.y
+dustdist=Abs(180-abs(360-255-LS))
+store_data,"dustdist",data={x:datLS.x,y:dustdist,ytitle:['degrees from $L_S=255$ dust storm peak'],YN:['dust storm distance'], fn:["dustdist"],  binsize:[10.],radian:[0],degree:[1]}
+projectorplot
+.run sesb2b1varplot
+sesb2b1varplot

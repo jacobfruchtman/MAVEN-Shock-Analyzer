@@ -1,0 +1,23 @@
+
+.run iterLoader
+
+.run mavenDataLoader
+.run clearPlots
+.run tplot_element
+
+.run daySaver
+.run linearStatRegress
+
+
+@routineCompiler.idlbatch
+.run errorsaver
+
+;.run savedshocklister
+;savedshocklister
+;exit
+.run savedshockChecker
+savedshockChecker
+;exit
+.run overvmachplotter
+;overconcluder,/REMOVENEGATIVES,maxAllowed=20,/manual;,/load2,/nofix
+overvmachplotter,/REMOVENEGATIVES,maxAllowed=20,/nofix,/manual;,/load2,/nofix

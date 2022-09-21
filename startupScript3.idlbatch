@@ -1,0 +1,133 @@
+
+;READ, jname, PROMPT='Enter jounal name'
+;journal,jname
+;@time_config.idlbatch
+
+;if not keyword_set(dayLoaded) then dayLoaded=0; else dayLoaded++
+wdelete
+print,"dayLoaded=",dayLoaded
+day2day=dayLoaded
+
+ndays=1.00;2.00;3.00
+;ndays=100.00
+;timespan, startdate, ndays
+clockss=tic("startupScript")
+currtime=systime()
+;SAVE, /ALL, FILENAME = 'dateData1.sav'
+;;;.run overVmachPlotter
+
+;overVmachPlotter
+
+!p.background=255
+!p.color=0
+
+;@mavenLoad.idlbatch
+
+;@mavenReload.idlbatch
+
+;if dayLoaded eq 14 then dayLoaded=15
+
+;.run iterLoader2
+;;;;.run mavenDataLoader
+;;.run clearPlots
+;;;;.run tplot_element
+;.run daySaver
+;;.run linearStatRegress
+;;;.run x2Cal
+;;;.run x2Jul
+;.run read_strDATA2
+;.run read_strDATA
+;@routineCompiler.idlbatch
+;;.run errorsaver
+;;.run savedshocklister
+;;.run savedshockChecker
+
+get_data,"dateDataCurrent",data=dateData
+;s=0
+;if size(dateData,/typ) ne 2 then str_element,datData,'finished',val,success=s
+;if s eq 1 then if val eq 0 then dateData.dayLoaded--
+if size(dateData,/typ) eq  0 then store_data,"dateDataCurrent",data={dayLoaded:[dayLoaded],finished:[1]} else str_element,dateData,"dayLoaded",dayLoaded,/add
+store_data,"dateDataCurrent",data=dateData
+iterClock=TIC("iterLoader")
+dayLoaded=iterLoader2(startdate,ndays=ndays,10,dayLoaded=dayLoaded,numDates,/add)
+TOC,iterClock
+dateData.dayLoaded=dayLoaded
+;dateData={startdate:startdate,ndays:ndays,dayLoaded:dayLoaded,numDates:numDates}
+store_data,"dateDataCurrent",data=dateData
+tplot_element,"dateDataCurrent","dayLoaded",dayLoaded,/add
+tplot_element,"dateDataCurrent","ndays",ndays,/add
+tplot_element,"dateDataCurrent","numDates",numDates,/add
+tplot_element,"dateDataCurrent","startdate",startdate,/add
+date=startdate.remove(-5)
+openU,1,"Documents/ERRORMESSAGES.txt",/append
+printf,1,"==================="
+printf,1,"during time session "+date
+;printf,1, ;.running for "+strtrim(ndays,2)+" days"
+printf,1,"ran on "+currtime
+printf,1,"-------------------"  
+close,1
+
+;;@routineCompiler.idlbatch
+
+routineClock=TIC("RoutineLoader")
+@routineLoader.idlbatch
+TOC,routineClock
+;RESTORE, 'dateData1.sav'
+get_data,"dateDataCurrent",data=dateData
+startdate=dateData.startdate
+numDates=dateData.numDates
+;dayLoaded=dateData.dayLoaded
+date=startdate.remove(-5)
+ndays=dateData.ndays
+;fname=("dateData_"+date)[0]
+;store_data,fname,data=dateData
+;tplot_save,fname,filename=fname
+manualStart=0
+		
+;print,fname
+;openU,1,"dateFiles.txt",/append
+;printf,1,fname+".tplot"
+;close,1
+daySaver
+get_data,"dateDataCurrent",data=dateData
+dateData.dayLoaded+=1
+dayLoaded=dateData.dayLoaded;dayLoaded++
+;if dayLoaded eq 150 then dayLoaded=60
+;if dayLoaded eq 75 then dayLoaded=1
+;dateData.dayLoaded=dayLoaded
+
+;dayLoaded=dateData.dayLoaded
+store_data,"dateDataCurrent",data=dateData
+print,dayLoaded
+print,numDates
+;if dayLoaded eq 20 then dayLoaded=39
+;if dayLoaded ge numDates then daySaver
+;;.run aggraplot
+;if total(dayLoaded eq [30,61,90,120,150]) ne 0  or dayLoaded gt numDates  then aggraplot
+;if total(dayLoaded eq [30,61,90,120,150]) ne 0  or dayLoaded gt numDates then overVmachPlotter,/REMOVENEGATIVES,maxAllowed=10
+
+;if dayLoaded eq 100 or dayLoaded eq 113 or dayLoaded gt numDates then overVmachPlotter,/REMOVENEGATIVES,maxAllowed=10
+
+
+;if dayLoaded eq 75 then tplot_element,"dateDataCurrent","dayLoaded",95,/add
+;if dayLoaded eq 60 then dayLoaded=95
+
+;if dayLoaded eq 60 then tplot_element,"dateDataPrev","dayLoaded",94,/add
+
+;if dayLoaded eq 60 then exit;or dayLoaded eq 113 then exit;dayLoaded=1
+;if dayLoaded eq 8 then exit
+if dayLoaded eq dateData.numDates+1 or dayLoaded eq 20 then exit
+;if dayLoaded eq 1207 then dayLoaded=2300
+
+
+;if dayLoaded eq 100 then exit
+;if dayLoaded eq 35 then exit
+openU,1,"Documents/ERRORMESSAGES.txt",/append
+printf,1,"ENDDATEENDDATEENDDATEENDDATEENDDATEENDDATE"
+close,1
+TOC,clockss
+clearPlots
+@startupScript3.idlbatch
+;print,dayLoaded
+;exit
+

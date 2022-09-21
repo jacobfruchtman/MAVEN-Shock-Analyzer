@@ -1,0 +1,193 @@
+
+;READ, jname, PROMPT='Enter jounal name'
+;journal,jname
+;@time_config.idlbatch
+
+;if not keyword_set(dayLoaded) then dayLoaded=0; else dayLoaded++
+wdelete
+print,"dayLoaded=",dayLoaded
+day2day=dayLoaded
+;startdate = '2014-12-24/0:00' 
+;startdate = '2014-12-28/0:00' 
+;startdate = '2015-01-12/0:00'    
+;startdate = '2015-1-18/0:00' 
+;startdate = '2015-1-26/0:00' 
+;startdate = '2015-02-02/0:00'   
+;startdate = '2015-2-26/0:00';  <----NO. BAD.
+;
+;startdate = '2015-7-15/0:00';<-GOOD
+;startdate = '2015-8-15/0:00';<-GOOD
+;startdate = '2015-8-20/0:00';,-GOOD
+;startdate = '2015-12-20/0:00';<-good? No idea what is going on with half the fields here.
+
+;startdate = '2015-8-02/0:00';  ;<- SHOULD WORK ON THIS DAY. ALGORITHM DOESN'T THINK ANY SHOCKS EXIST HERE. NEED TO CORRECT
+;startdate = '2015-10-10/0:00';  <-GOOD
+;startdate = '2015-10-20/0:00'  ;<--some false positves, relatively well behaved though
+;startdate = '2015-11-00/0:00'   ;<- ONE shock here
+;startdate = '2015-11-20/0:00'  ;<--No. Never leaves the Sheath
+;startdate = '2015-2-20/0:00'  ;<-Beautiful. aside from two weird fits
+;startdate = '2015-2-21/0:00'  
+;startdate = '2015-3-20/0:00'  
+;startdate = '2016-01-12/0:00' 
+;startdate = '2016-02-16/0:00';<-Beautiful
+;startdate = '2016-2-20/0:00' ; <-GOOD
+;startdate = '2016-2-30/0:00'  ;<-GOOD (wait. What?)
+;startdate = '2016-3-01/0:00'
+;startdate = '2016-3-10/0:00'  ;
+;startdate = '2016-3-30/0:00'  ;<--GOOD
+;startdate = '2016-5-30/0:00'  ;<-GOOD
+
+;startdate = '2016-07-01/0:00' 
+;startdate = '2016-07-27/0:00';<-Beautiful
+;startdate = '2016-08-15/0:00';
+;startdate = '2016-09-15/0:00';<-GOOD
+
+;startdate = '2016-10-02/0:00'  ;GOOD
+;startdate = '2017-02-02/0:00'
+;startdate = '2017-03-15/0:00';
+;startdate = '2017-03-20/0:00';<----NO
+;startdate = '2017-03-25/0:00';<----NOTHIN
+;startdate = '2017-03-30/0:00';<----NOTHIN
+;startdate = '2017-04-10/0:00';<--Nothing
+;startdate = '2017-04-15/0:00';<--NOTHING
+;startdate = '2017-04-20/0:00';<--NOTHING
+;startdate = '2017-05-02/0:00';<--NOTHING
+;startdate = '2017-05-10/0:00';<--NOTHING
+;startdate = '2017-5-15/0:00';<--NOTHING
+;startdate = '2017-5-25/0:00';<-NOTHING
+;startdate = '2017-6-25/0:00';<-3 locations?
+;startdate = '2017-7-02/0:00';
+;startdate = '2017-7-29/0:00' ;<-MULTIPLE CONFIRMED LOCATIONS
+;startdate = '2017-8-29/0:00' ;<-MULTIPLE CONFIRMED LOCATIONS
+;startdate = '2017-05-10/0:00' ; <---NO. NOTHING HERE 
+;startdate = '2017-09-06/0:00'  ;GOOD? No. TOO MANY FALSE POSITIVES
+;startdate = '2017-10-02/0:00';<-NO
+;startdate = '2017-10-12/0:00';<-NO
+;startdate = '2017-11-12/0:00';<-NO
+;startdate = '2018-3-12/0:00';<-NO
+;startdate = '2018-3-20/0:00';<-NO
+;startdate = '2017-12-06/0:00' ;<---NO
+;startdate = '2018-01-06/0:00' ;<---NO
+;startdate = '2016-12-12/0:00'      
+ndays=1.00;2.00;3.00
+;ndays=100.00
+;timespan, startdate, ndays
+clockss=tic("startupScript")
+currtime=systime()
+;SAVE, /ALL, FILENAME = 'dateData1.sav'
+;.run overVmachPlotter
+
+;overVmachPlotter
+
+!p.background=255
+!p.color=0
+
+;@mavenLoad.idlbatch
+
+;@mavenReload.idlbatch
+
+;if dayLoaded eq 14 then dayLoaded=15
+
+.run iterLoader
+;;.run mavenDataLoader
+.run clearPlots
+;;.run tplot_element
+.run daySaver
+.run linearStatRegress
+;.run x2Cal
+;.run x2Jul
+.run read_strDATA2
+.run read_strDATA
+@routineCompiler.idlbatch
+.run errorsaver
+.run savedshocklister
+.run savedshockChecker
+
+get_data,"dateDataCurrent",data=dateData
+;s=0
+;if size(dateData,/typ) ne 2 then str_element,datData,'finished',val,success=s
+;if s eq 1 then if val eq 0 then dateData.dayLoaded--
+if size(dateData,/typ) eq  0 then store_data,"dateDataCurrent",data={dayLoaded:[dayLoaded],finished:[1]} else str_element,dateData,"dayLoaded",dayLoaded,/add
+store_data,"dateDataCurrent",data=dateData
+iterClock=TIC("iterLoader")
+dayLoaded=iterLoader(startdate,ndays=ndays,10,listfile=listfile,dayLoaded=dayLoaded,numDates,/add)
+TOC,iterClock
+dateData.dayLoaded=dayLoaded
+;dateData={startdate:startdate,ndays:ndays,dayLoaded:dayLoaded,numDates:numDates}
+store_data,"dateDataCurrent",data=dateData
+tplot_element,"dateDataCurrent","dayLoaded",dayLoaded,/add
+tplot_element,"dateDataCurrent","ndays",ndays,/add
+tplot_element,"dateDataCurrent","numDates",numDates,/add
+tplot_element,"dateDataCurrent","startdate",startdate,/add
+date=startdate.remove(-5)
+openU,1,"Documents/ERRORMESSAGES.txt",/append
+printf,1,"==================="
+printf,1,"during time session "+date
+;printf,1, "running for "+strtrim(ndays,2)+" days"
+printf,1,"ran on "+currtime
+printf,1,"-------------------"  
+close,1
+
+;;@routineCompiler.idlbatch
+
+routineClock=TIC("RoutineLoader")
+@routineLoader.idlbatch
+TOC,routineClock
+;RESTORE, 'dateData1.sav'
+get_data,"dateDataCurrent",data=dateData
+startdate=dateData.startdate
+numDates=dateData.numDates
+;dayLoaded=dateData.dayLoaded
+date=startdate.remove(-5)
+ndays=dateData.ndays
+;fname=("dateData_"+date)[0]
+;store_data,fname,data=dateData
+;tplot_save,fname,filename=fname
+manualStart=0
+		
+;print,fname
+;openU,1,"dateFiles.txt",/append
+;printf,1,fname+".tplot"
+;close,1
+daySaver
+get_data,"dateDataCurrent",data=dateData
+dateData.dayLoaded+=1
+dayLoaded=dateData.dayLoaded;dayLoaded++
+;if dayLoaded eq 150 then dayLoaded=60
+;if dayLoaded eq 75 then dayLoaded=1
+;dateData.dayLoaded=dayLoaded
+
+;dayLoaded=dateData.dayLoaded
+store_data,"dateDataCurrent",data=dateData
+print,dayLoaded
+print,numDates
+;if dayLoaded eq 20 then dayLoaded=39
+;if dayLoaded ge numDates then daySaver
+;if total(dayLoaded eq [30,61,90,120,150]) ne 0  or dayLoaded gt numDates  then aggraplot
+;if total(dayLoaded eq [30,61,90,120,150]) ne 0  or dayLoaded gt numDates then overVmachPlotter,/REMOVENEGATIVES,maxAllowed=10
+
+;if dayLoaded eq 100 or dayLoaded eq 113 or dayLoaded gt numDates then overVmachPlotter,/REMOVENEGATIVES,maxAllowed=10
+
+
+;if dayLoaded eq 75 then tplot_element,"dateDataCurrent","dayLoaded",95,/add
+;if dayLoaded eq 60 then dayLoaded=95
+
+;if dayLoaded eq 60 then tplot_element,"dateDataPrev","dayLoaded",94,/add
+if dayLoaded eq 18 or dayLoaded eq 33 or dayLoaded gt numDates then exit
+;if dayLoaded eq 60 then exit;or dayLoaded eq 113 then exit;dayLoaded=1
+;if dayLoaded eq 8 then exit
+if dayLoaded eq 1164 or dayLoaded eq 597 or dayLoaded gt numDates then exit
+;if dayLoaded eq 1207 then dayLoaded=2300
+
+
+;if dayLoaded eq 100 then exit
+;if dayLoaded eq 35 then exit
+openU,1,"Documents/ERRORMESSAGES.txt",/append
+printf,1,"ENDDATEENDDATEENDDATEENDDATEENDDATEENDDATE"
+close,1
+TOC,clockss
+clearPlots
+@startupScript.idlbatch
+;print,dayLoaded
+;exit
+

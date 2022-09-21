@@ -1,0 +1,31 @@
+;TOC,routineClock
+;RESTORE, 'dateData1.sav'
+get_data,"dateDataCurrent",data=dateData
+startdate=dateData.startdate
+numDates=dateData.numDates
+dayLoaded=dateData.dayLoaded
+date=startdate.remove(-5)
+ndays=dateData.ndays
+fname=("dateData_"+date)[0]
+store_data,fname,data=dateData
+tplot_save,fname,filename=fname
+manualStart=0
+		
+;print,fname
+;openU,1,"dateFiles.txt",/append
+;printf,1,fname+".tplot"
+;close,1
+daySaver
+get_data,"dateDataCurrent",data=dateData
+dateData.dayLoaded=dateData.dayLoaded+1
+dayLoaded=dateData.dayLoaded
+store_data,"dateDataCurrent",data=dateData
+openU,1,"Documents/ERRORMESSAGES.txt",/append
+printf,1,"END "+date+" END "+date+" END"
+close,1
+;if dayLoaded ge numDates then daySaver
+if dayLoaded gt numDates then exit
+;if dayLoaded ge numDates then dayLoaded=1;exit
+
+
+clearPlots

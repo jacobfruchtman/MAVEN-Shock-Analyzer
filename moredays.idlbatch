@@ -1,0 +1,14 @@
+
+
+dayLoaded=730
+clearPlots
+@startupScript2.idlbatch
+dayLoaded=801
+clearPlots
+@startupScript2.idlbatch
+dayLoaded=793;2017-12-16
+clearPlots
+@startupScript2.idlbatch
+dayLoaded=861;2018-03-10
+clearPlots
+@startupScript2.idlbatch

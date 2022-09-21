@@ -1,0 +1,55 @@
+
+		@routineCompiler.idlbatch
+		;ndays=2.00
+		;ndays=100.00
+		;startdate='2015-02-06'
+		timespan, startdate, ndays
+
+		currtime=systime()
+		SAVE, /ALL, FILENAME = 'dateData1.sav'
+		
+		;mavenDataLoader
+	;	mvn_swia_load_l2_data,/tplot,/loadall		;Load SWIA data and make tplot vars	
+	;	mvn_mag_load,'l1_1sec'				;Load L1 B data at 1-sec cadence
+	;	mvn_mag_load,’l2_full’
+		;mvn_swe_load_l2,/sumplot			;Load SWEA data and make tplot vars
+	;	maven_orbit_tplot
+		
+		mvn_swia_load_l2_data,/tplot,/loadall		;Load SWIA data and make tplot vars	
+		mvn_mag_load,'l1_1sec'				;Load L1 B data at 1-sec cadence
+		tplot,1
+		mvn_mag_load,'l2_full'
+		mk = mvn_spice_kernels(/load)			;Load SPICE Kernels
+		TOC
+		
+		print,systime()
+						;rotate B to MSO
+	;mvn_swe_load_l2,/sumplot			;Load SWEA data and make tplot vars
+		TIC
+		maven_orbit_tplot
+		TOC
+		spice_position_to_tplot,'MAVEN','MARS',frame = 'MSO'	;tplot variable for MAVEN position
+		get_data,'wind',data=datW
+		w=datW.y
+
+		print,"first checkpoint passed!"
+		spice_vector_rotate_tplot,'mvn_B_1sec','MAVEN_MSO',check = 'MAVEN_SC_BUS'
+		print,"doing regid now"
+		mvn_swia_regid
+
+		get_data,'regid',data=datReg
+
+		reg=(datReg.y)[*,0]
+
+		GG=where(reg eq 1, swcount)
+
+
+		print,"second checkpoint passed!"
+		print,systime()
+		TIC
+		mvn_swia_part_moments
+
+		.run baverages
+		baverages
+
+		print,"finished!"

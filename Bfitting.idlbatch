@@ -1,0 +1,183 @@
+BfitClock=TIC("Bfitting")
+
+;.run arrMag
+;.run absPlot
+;.run arrayDims
+;.run x2Greg
+;.run vecsmoother
+;.run numDerivative
+;.run SpectroMoment
+;.run flagClean
+;.run threshFlag
+;.run regidClean
+;.run tanhfit
+;.run atanh
+;.run plotSmoother
+;.run shockfitter
+;.run shockfitter2
+;.run vecsmoother
+;.run curveFitter
+;.run curveFitter3
+;.run curveFitter4
+;.run Fitloop
+;.run curveFitter5
+;.run tplotmultiplier
+;.run updownFlag               
+;.run shockNormCalc
+;.run shockTester
+;;.run Fitloop
+;.run carttocyl
+;.run overshooter
+;.run BFITCOMBINER
+;.run interpolator
+;.run calcBeta
+;.run Cal2Unix
+;.run spikeFiller
+;.run clearPlots
+;.run flagexpand
+;clearPlots
+;.run electronsetup
+;.run ionsetup
+;.run magneticsetup1
+;.run intervalsetup
+;.run saneAdjust
+
+
+;.run EXTREMA
+;.run secondOrderFitter
+;.run fitCombiner
+;.run fitCombiner2
+;.run BFITCOMBINER
+;.run ajRefiner
+;.run monoRoll
+;.run secondRoll
+;.run alwaysOn
+;.run fifth_roll
+;.run aoscillate
+;.run third_roll
+;.run coeffCalc
+;.run findShock
+;.run atanh
+;.run findshock
+;.run FalseShockSkipper
+;.run Bfitter
+;clearPlots
+;.run midboundaryrefiner
+;.run boundaryrefiner
+;.run boundaryrefiner2
+;.run curveorders
+;.run extremathreshplot
+;.run extremaroll
+;.run foreshockpasser
+;.run boundaryshrinker
+;.run startboundaryrefiner
+;.run intervalextremafinder
+;.run curveFitter
+;.run curveFitter3
+;.run curveFitter4
+;.run fitloop
+;.run fitloop2
+;.run curveFitter5
+;.run curveFitter6
+;.run errorsaver
+;.run calculatelocalcyclotronperiod
+;.run footbottomer
+;.run cyclotronperiodsaver
+;.run findupstreamcyclotronperiod
+;.run cyclotronAverager
+;.run flagclean2
+;.run downstreamcalc
+;.run underdown
+;.run backendblock
+;.run forerefinder
+;.run downsmoothdev
+
+;.run regionalcrustalremover
+;.run crustalremover
+
+;.run fitstart
+numDerivative,"B_median",1,'mid'
+
+;options,"B_media*",'colors','r'
+;options,"B20*",'colors','b'
+;options,"B_20sec",'colors','c'
+;options,"B5*",'colors','g'
+;store_data,"BB_median",data="mvn_B_1sec_MAVEN_MSO_Mag B_median"
+;store_data,"BB_20",data="mvn_B_1sec_MAVEN_MSO_Mag B20"
+;store_data,"BB_20sec",data="mvn_B_1sec_MAVEN_MSO_Mag B_20sec"
+;store_data,"BB_5-3",data="mvn_B_1sec_MAVEN_MSO_Mag B5-3"
+extremathreshplot,"B_medianderiv",1
+
+
+numDerivative,"PE_half",1,"mid"
+;.run crossingmaxima
+crossingmaxima,"PE_halfderiv",/ant,/userawflag          
+
+boundaryrefiner
+;shockIntervelator,/refined
+;intervalextremafinder,"B20deriv"
+
+calc,"'B_SNR'='B_half'/'B_stddev'"
+calc,"'B_SNR_inverse'='B_stddev'/'B_half'"
+
+boundaryrefiner2;,explot="B20deriv_extrema"
+;.run shockIntervelator
+;.run intervalextremafinder
+
+shockIntervelator,/refined
+intervalextremafinder,"B20deriv"
+;intervalextremafinder,"B5-3d10"
+boundaryrefiner2,explot="B20deriv_extrema"
+findupstreamcyclotronperiod
+
+absPlot,"B20deriv"
+intervalextremafinder,"B20deriv_abs"
+
+;absPlot,"B60deriv"
+;plotSmoother,"B60deriv_abs",smoothType=6,width=2,newName="B60dabs1"
+plotSmoother,"B60deriv",smoothType=6,width=4,newName="B60deriv2"
+intervalextremafinder,"B60deriv2"
+
+calc,"'B60derex'='B60deriv2_extrema'*'B60deriv2'"
+
+
+absPlot,"B5-3d10"
+intervalextremafinder,"B5-3d10_abs"
+
+flagclean2,"B_above-up_regions",loops=5
+flagclean2,"B_above-up_regions",newName="B_above-up_regions_cleaned"
+;putting the cyclotron 
+;cyclotronaverager,newNames=["B_1stModalAverage","B_2ndModalAverage","B_3rdModalAverage"]
+cyclotronaverager,/only,newN="B_cycloperiod"
+cyclotronaverager,/only,newN="Bmmstd_cycloperiod",plt='mvn_B_1sec_MAVEN_MSO_Mag_modal_stddev_normalized'
+;store_data,"avs2",data="mvn_B_1sec_MAVEN_MSO_Mag B_1stModalAverage B_2ndModalAverage B_3rdModalAverage"
+plotSmoother,'mvn_B_1sec_MAVEN_MSO_Mag_modal_mean',smoothType=1,width=5,newName="B_meanMode_smoothed"
+;extremathreshplot,'mvn_B_1sec_MAVEN_MSO_Mag_modal_mean',1
+
+findmonoregions,'B_meanMode_smoothed'
+threshFlag,'B20deriv_abs',.3,kindThresh="le"
+;.run shocklocatetest
+shocklocatetest
+;.run monoRoll
+;.run ajRefiner
+
+;crustalremover
+;numDerivative,'B_meanMode_smoothed',1,"mid"
+crossingmaxima,"PE_halfderiv",/ant                                           
+;plotfracdiff,'B_meanMode_smoothed',"B_sec_smoothed",newName='Bmm_smoothed_fdiff'
+;plotfracdiff,'B_meanMode_smoothed',"B_sec_smoothed_back",newName='Bmm_smoothed_back_fdiff'
+;plotfracdiff,'B_median',"B_sec_smoothed",newName='B_median_smoothed_fdiff'
+Bfitter,Debug=Debug,/allow
+
+;plotfracdiff,'Franken_fitted',"B_sec_smoothed",newName='Franken_smoothed_fdiff'
+;plotfracdiff,'Franken_fitted',"B_sec_smoothed",newName='Franken_smoothed_back_fdiff'
+;store_data,'Bfdownup',data='mvn_B_1sec_MAVEN_MSO_Mag upstream_fit downstream_fit Franken_fitted'
+
+;store_data,"avs2ffd",data="Franken_fitted_downstream B_1stModalAverage B_2ndModalAverage B_3rdModalAverage"
+underdown
+	;store_data,"avs2ff",data="Franken_fitted B_1stModalAverage B_2ndModalAverage B_3rdModalAverage"
+;store_data,'avgmmff',data="mvn_B_1sec_MAVEN_MSO_Mag Franken_fitted mvn_B_1sec_MAVEN_MSO_Mag_modal_mean"
+;store_data,'avgmmmff',data="mvn_B_1sec_MAVEN_MSO_Mag Franken_fitted B_meanMode_smoothed"
+downstreamcalc
+;calc,"'downmmdev'='B_meanMode_smoothed'-'downstream_fit'"
+TOC,BfitClock
