@@ -1,0 +1,85 @@
+;curveFitter,"mvn_B_1sec_Mag", newName="B_fitted" 
+;numDerivative,"B_fitted10",1,"mid"
+numDerivative,"Franken_fitted",1,"mid"
+;threshFlag,"B_fitted10deriv",-1,kindThresh=2,newName="shock_ascend"
+;threshFlag,"B_fitted10deriv",1,kindThresh=0,newName="shock_descend"
+threshFlag,"Franken_fittedderiv",-1,kindThresh=2,newName="shock_ascend"
+threshFlag,"Franken_fittedderiv",1,kindThresh=0,newName="shock_descend"
+                        
+calc,"'updown'='regid_cleaned_plotdescend'+'regid_cleaned_plotascend'"
+
+
+;updownFlag,'B_fitted10deriv'
+;tplotmultiplier,"B_fitted10","updown","BF_shock" 
+;tplotmultiplier,"BF_shock","B_fitted10deriv_updown","BF_shocker"          
+updownFlag,'Franken_fittedderiv'
+tplotmultiplier,"Franken_fitted","updown","BF_shock" 
+tplotmultiplier,"BF_shock","Franken_fittedderiv_updown","BF_shocker"          
+
+
+tplotmultiplier,"BF_shocker","regid_cleaned_plotascend_flag","BF_shockA"
+tplotmultiplier,"BF_shocker","regid_cleaned_plotdescend_flag","BF_shockD"
+
+shockNormCalc
+
+calc,"'B_perturb3'='mvn_B_1sec_Mag'-'B_fitted3'"
+calc,"'B_perturb5'='mvn_B_1sec_Mag'-'B_fitted5'"
+
+
+;tplot,[35,77,101,129,140,141]
+;@shockDebug.idlbatch
+;@normalPlots.idlbatch
+
+.run DotProduct 
+.run carttocyl
+.run shockPlotter
+
+RESTORE, 'dateData1.sav'
+shockPlotter,startdate=startDate,ndays=ndays    
+;plotSmoother,"mvn_B_1sec_Mag",smoothType=6,width=60,newName="B60" 
+;plotSmoother,"mvn_B_1sec_Mag",smoothType=5,width=60,newName="Bmin" 
+;plotSmoother,"mvn_swica_density",smoothType=5,width=60,newName="rho60" 
+;numDerivative,"rho60",1,"mid" 
+
+;tplot,[137,77,109,138]
+tplot,"shocks",/add
+;tplot,"rho60",/add
+tplot,"bf34",/add
+;plotSmoother,"rho60deriv",smoothType=7,width=60,newName="rho60d" 
+;threshFlag,'rho60deriv',1,kindThresh=1
+;plotSmoother,"rho60",smoothType=5,width=20,newName="rho60-20" 
+;plotSmoother,"rho60-20",smoothType=5,width=20,newName="rho60-20-20" 
+;plotSmoother,"rho60deriv",smoothType=5,width=60,newName="rhomind" 
+;numDerivative,'rho60-20-20',1,"mid"  
+;calc,"'rho_perturb1'='mvn_swica_density'-'rho60-20-20'"
+
+options,'Bmin','colors','y'
+;options,'rho60-20','colors','b'
+;options,'rho60-20-20','colors','r'
+;store_data,'BfitCombo3',data = "mvn_B_1sec_Mag B_fitted3"
+;store_data,'rhocombo',data = "mvn_swica_density rho60-20 rho60-20-20"
+
+;plotSmoother,"mvn_swica_density",smoothType=8,width=5,newName="stdrho5" 
+
+;calc,"'bfs'='B_fitted3'-'B_fitted4'"
+
+;tplot,"*_shocks"
+
+;tplot,['bf37','bf48','bf59','bf610','bpf345'],/add
+tplot,['shocks','bff','shocks678910', 'bf678910']
+overshooter
+
+tplot,'overshoot',/add
+
+.run machNumCalcFine
+machNumCalcFine
+.run machNumCalc2
+machNumCalc2
+RESTORE, 'dateData1.sav'
+.run overshootComparer
+overshootComparer,startdate
+
+;tplot_save,filename=startdate+"data"
+
+.run overVmachPlotter
+
