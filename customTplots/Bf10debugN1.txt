@@ -1,0 +1,570 @@
+> curveFitter5,"mvn_B_1sec_MAVEN_MSO_Mag", newName="B_fitted10" ,/doRoll,/doSecond,/secondOrder,Debug=2
+=curveFitter5=5=5=5=5=5=5=5=5=5=5=5=5=5=5=5=5=curveFitter5=
+newName=B_fitted10, rollup=       1, rollsec=       1
+=curveFitter5=5=5=5=5=5=5=5=5=5=5=5=5=5=5=5=5=curveFitter5=
+type  2: curve fit
+numel(hill)=      172800
+numel(hill)=      172800
+[ddn,aan,bbn]=          10          11          10
+numel(hill)=      172800
+       1.0000000
+===================================================================
+5			inbound side				 5
+===================================================================
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       1
+numel(hill)=      172800, bi=       24748
+[dim,aj,bi,aj-dim,bi-dim]=       13416       22752       24748        9336       11332
+monorolling
+numel(hill)=      172800, bi=       24743
+numel(hill)=      172800, bi=       24743
+aj=      23074.0, aj-dim=      9658.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9658.00      1669.00
+      172800yBS[dim:bi]=yBS[       13416:       24743]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9336.00      9336.00      9658.00      9653.00
+to zeroth order, guess that MM=       9.7969214       1.0000000       9653.0000       14.465659
+2nd order status=       0, chi^2=      0.19343736
+Function parameters:        1.3342959       1.0001211       9651.8534       6.1797728
+shrunk front by [dim,imin,imin-dim]=       13416       22767        9351
+shrunk back by [bi,imax,bi-imax]=       24743       23547        1196
+status=       0, chi^2=      0.70415810
+Function parameters:        2.6843271       1.2122942       365.37703       7.8021334
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       10.486461       5.1178063       1675.0000
+      0.14787675
+[imin,ishock,imax]=       22767       23068       23547
+ishock=       23068
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       2
+numel(hill)=      172800, bi=       41020
+[dim,aj,bi,aj-dim,bi-dim]=       29556       39152       41020        9596       11464
+monorolling
+numel(hill)=      172800, bi=       41020
+numel(hill)=      172800, bi=       41020
+aj=      39217.0, aj-dim=      9661.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9661.00      1803.00
+      172800yBS[dim:bi]=yBS[       29556:       41020]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9596.00      9596.00      9661.00      9660.00
+to zeroth order, guess that MM=       10.050794       1.0000000       9660.0000       14.583799
+2nd order status=       0, chi^2=     0.069101056
+Function parameters:        4.1098521      0.99968873       9655.9748       8.5776979
+shrunk front by [dim,imin,imin-dim]=       29556       38915        9359
+shrunk back by [bi,imax,bi-imax]=       41020       39695        1325
+status=       0, chi^2=      0.30150582
+Function parameters:        4.7766223      0.96635149       289.90174       9.3194588
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       14.096081       4.5428365       1805.0000
+      0.15744941
+[imin,ishock,imax]=       38915       39215       39695
+ishock=       39215
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       3
+numel(hill)=      172800, bi=       57764
+[dim,aj,bi,aj-dim,bi-dim]=       46256       55668       57764        9412       11508
+monorolling
+numel(hill)=      172800, bi=       57764
+numel(hill)=      172800, bi=       57764
+aj=      55746.0, aj-dim=      9490.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9490.00      2018.00
+      172800yBS[dim:bi]=yBS[       46256:       57764]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9412.00      9412.00      9490.00      9357.00
+to zeroth order, guess that MM=       9.4066832       1.0000000       9357.0000       16.316770
+2nd order status=       0, chi^2=      0.13352926
+Function parameters:        3.0634340      0.99998212       9356.5845       10.012847
+shrunk front by [dim,imin,imin-dim]=       46256       55313        9057
+shrunk back by [bi,imax,bi-imax]=       57764       56093        1671
+status=       0, chi^2=      0.79400905
+Function parameters:        3.8197305      0.96847701       290.95923       11.319111
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       15.138842       7.4993809       2151.0000
+      0.18691345
+[imin,ishock,imax]=       55313       55613       56093
+ishock=       55613
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       4
+numel(hill)=      172800, bi=       73916
+[dim,aj,bi,aj-dim,bi-dim]=       63032       71876       73916        8844       10884
+monorolling
+numel(hill)=      172800, bi=       73909
+numel(hill)=      172800, bi=       73909
+aj=      72524.0, aj-dim=      9492.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9492.00      1385.00
+      172800yBS[dim:bi]=yBS[       63032:       73909]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      8844.00      8844.00      9492.00      9487.00
+to zeroth order, guess that MM=       9.7759496       1.0000000       9487.0000       15.676416
+2nd order status=       0, chi^2=      0.30734481
+Function parameters:        1.5750704       1.0002008       9486.6103       7.4127339
+shrunk front by [dim,imin,imin-dim]=       63032       72217        9185
+shrunk back by [bi,imax,bi-imax]=       73909       72997         912
+status=       0, chi^2=      0.53814457
+Function parameters:        3.7880529       1.1682422       352.04601       9.8046828
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       13.592736       6.0166299       1391.0000
+      0.12788452
+[imin,ishock,imax]=       72217       72518       72997
+ishock=       72518
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       5
+numel(hill)=      172800, bi=       90952
+[dim,aj,bi,aj-dim,bi-dim]=       78956       88732       90952        9776       11996
+monorolling
+numel(hill)=      172800, bi=       90952
+numel(hill)=      172800, bi=       90952
+aj=      88858.0, aj-dim=      9902.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9902.00      2094.00
+      172800yBS[dim:bi]=yBS[       78956:       90952]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9776.00      9776.00      9902.00      9892.00
+to zeroth order, guess that MM=       11.201008       1.0000000       9892.0000       16.479247
+2nd order status=       0, chi^2=      0.16015468
+Function parameters:        3.3870463      0.99671677       9862.0136       8.3606268
+shrunk front by [dim,imin,imin-dim]=       78956       88550        9594
+shrunk back by [bi,imax,bi-imax]=       90952       89330        1622
+status=       0, chi^2=      0.72224637
+Function parameters:        3.6885064      0.33488426       102.87364       9.2863691
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       12.974875       5.5978627       2095.0000
+      0.17464155
+[imin,ishock,imax]=       88550       88857       89330
+ishock=       88857
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       6
+numel(hill)=      172800, bi=      107404
+[dim,aj,bi,aj-dim,bi-dim]=       95848      105220      107404        9372       11556
+monorolling
+numel(hill)=      172800, bi=      107404
+numel(hill)=      172800, bi=      107404
+aj=      105307., aj-dim=      9459.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9459.00      2097.00
+      172800yBS[dim:bi]=yBS[       95848:      107404]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9372.00      9372.00      9459.00      9449.00
+to zeroth order, guess that MM=       13.937610       1.0000000       9449.0000       17.932712
+2nd order status=       0, chi^2=      0.25304915
+Function parameters:        5.3085019       1.0000153       9448.6082       10.323663
+shrunk front by [dim,imin,imin-dim]=       95848      104996        9148
+shrunk back by [bi,imax,bi-imax]=      107404      105776        1628
+status=       0, chi^2=      0.71353849
+Function parameters:        6.0051084      0.86620494       260.74659       12.402630
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       18.407739       6.3975218       2107.0000
+      0.18232952
+[imin,ishock,imax]=      104996      105297      105776
+ishock=      105297
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       7
+numel(hill)=      172800, bi=      123856
+[dim,aj,bi,aj-dim,bi-dim]=      112328      121708      123856        9380       11528
+monorolling
+numel(hill)=      172800, bi=      123856
+numel(hill)=      172800, bi=      123856
+aj=      121744., aj-dim=      9416.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      9416.00      2112.00
+      172800yBS[dim:bi]=yBS[      112328:      123856]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9380.00      9380.00      9416.00      9414.00
+to zeroth order, guess that MM=       13.826524       1.0000000       9414.0000       20.921478
+2nd order status=       0, chi^2=     0.088698795
+Function parameters:        5.9681450      0.99956627       9409.5606       12.974700
+shrunk front by [dim,imin,imin-dim]=      112328      121442        9114
+shrunk back by [bi,imax,bi-imax]=      123856      122222        1634
+status=       0, chi^2=      0.42313965
+Function parameters:        6.4894039      0.95581522       286.79201       13.647522
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       20.136926       7.1581179       2114.0000
+      0.18337959
+[imin,ishock,imax]=      121442      121742      122222
+ishock=      121742
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       8
+numel(hill)=      172800, bi=      140392
+[dim,aj,bi,aj-dim,bi-dim]=      128616      137968      140392        9352       11776
+monorolling
+numel(hill)=      172800, bi=      140392
+numel(hill)=      172800, bi=      140392
+aj=      138018, aj-dim=        9402, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       1.0000000       0.0000000       0.0000000
+        9402        2374
+      172800yBS[dim:bi]=yBS[      128616:      140392]
+[zeron,aj0-dim,aj-dim,aaj-dim]=        9352        9352        9402        9399
+to zeroth order, guess that MM=       15.906293       1.0000000       9399.0000       23.326423
+2nd order status=       0, chi^2=      0.41587102
+Function parameters:        8.7695597       1.0000513       9398.5230       16.700309
+shrunk front by [dim,imin,imin-dim]=      128616      137714        9098
+shrunk back by [bi,imax,bi-imax]=      140392      138494        1898
+status=       0, chi^2=      0.34649205
+Function parameters:        9.7266337       1.0137775       304.69443       20.067345
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       29.793979       10.340711       2377.0000
+      0.20185122
+[imin,ishock,imax]=      137714      138015      138494
+ishock=      138015
+test=       1
+FORWARDFORWARDFORWARDFORWARDFORWARDFORWARDFORWARD
+i=       9
+numel(hill)=      172800, bi=      157795
+[dim,aj,bi,aj-dim,bi-dim]=      145511      154239      157795        8728       12284
+monorolling
+numel(hill)=      172800, bi=      157776
+numel(hill)=      172800, bi=      157776
+aj=      154332., aj-dim=      8810.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=       0.0000000       0.0000000       0.0000000
+      8810.00      3444.00
+      172800yBS[dim:bi]=yBS[      145522:      157776]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      8728.00      8717.00      8810.00      8729.00
+to zeroth order, guess that MM=       11.263922       1.0000000       8729.0000       21.656153
+2nd order status=       0, chi^2=      0.60531067
+Function parameters:        3.1304253      0.99991917       8729.1907       13.549546
+shrunk front by [dim,imin,imin-dim]=      145522      153952        8430
+shrunk back by [bi,imax,bi-imax]=      157776      154732        3044
+status=       0, chi^2=      0.21814389
+Function parameters:        7.0248833     0.074580198       27.834041       17.525989
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       24.550872       10.501106       3451.0000
+      0.28162232
+[imin,ishock,imax]=      153952      154325      154732
+ishock=      154325
+test=       1
+-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D-D
+now for the range ys[0:BB[0]]=ys[0:        8536]
+monorolling
+numel(hill)=      172800, bi=        8536
+      6486.00      2050.00
+      172800yBS[dim:bi]=yBS[       0:        8536]
+to zeroth order, guess that MM=       10.000000       1.0000000       6424.0000       15.000000
+Function parameters:        1.7800113      0.99991832       6423.4800       4.9760428
+, status=       0
+(x)shrunk front by [dim,imin,imin-dim]=           0        6004        6004
+(x)shrunk back by [bi,imax,bi-imax]=        8536        6844        1692
+[numel(yp),numel(ypp)]=        8537         841
+To second order, Function parameters:        3.1815599     0.025618821       11.248749       7.0060312
+status=       0, CHISQ=      0.65464872, numel(yfit)=         841
+[imin,ishock,imax]=        6004        6443        6844
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-ishock,(bi-ishock)*1.0/(bi-dim)]=       10.187591       3.8244713       2093.0000
+      0.24519682
+[status,CHISQ lt minChi, bi-ishock gt minRemain]=       0       1       1
+0th outbound is working
+===================================================================
+			outbound side
+===================================================================
+Altering tplot variable: 146 mvn_B_1sec_MAVEN_MSO_Mag_rev
+Altering tplot variable: 147 ascend_end_rev
+Altering tplot variable: 148 ascend_begin_rev
+Altering tplot variable: 149 descend_end_rev
+Altering tplot variable: 150 descend_begin_rev
+Altering tplot variable: 139 B_sec_smoothed
+       1.0000000       1.0000000       1.0000000       1.0000000       1.0000000       1.0000000       1.0000000       1.0000000
+       1.0000000       1.0000000
+numel(nys)=      172800
+[nDD[       1],nAA[       1,nBB[       1]]=       18560       27288       29168
+[nDD[       2],nAA[       2,nBB[       2]]=       34831       44183       45575
+[nDD[       3],nAA[       3,nBB[       3]]=       51091       60471       61803
+[nDD[       4],nAA[       4,nBB[       4]]=       67579       76951       78191
+[nDD[       5],nAA[       5,nBB[       5]]=       84067       93843       95055
+[nDD[       6],nAA[       6,nBB[       6]]=      100923      109767      111031
+[nDD[       7],nAA[       7,nBB[       7]]=      117131      126543      127647
+[nDD[       8],nAA[       8,nBB[       8]]=      133647      143243      144403
+[nDD[       9],nAA[       9,nBB[       9]]=      150047      159383      160863
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       1
+numel(hill)=      172800, bi=       29168
+[dim,aj,bi,aj-dim,bi-dim]=       18560       27288       29168        8728       10608
+monorolling
+numel(hill)=      172800, bi=       29168
+numel(hill)=      172800, bi=       29168
+aj=      27665.0, aj-dim=      9105.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      9105.00      1503.00
+      172800yBS[dim:bi]=yBS[       18560:       29168]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      8728.00      8728.00      9105.00      9018.00
+to zeroth order, guess that MM=       24.183708       1.0000000       9018.0000       34.318807
+2nd order status=       0, chi^2=      0.22446937
+Function parameters:        16.672173      0.99998628       9017.6293       27.149176
+shrunk front by [dim,imin,imin-dim]=       18560       27278        8718
+shrunk back by [bi,imax,bi-imax]=       29168       28058        1110
+status=       0, chi^2=      0.30092033
+Function parameters:        12.528900     0.036388454       10.925056       24.490898
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       37.019798       11.961998       1590.0000
+      0.14988688
+[imin,ishock,imax]=       27278       27578       28058
+ishock=       27578
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       2
+numel(hill)=      172800, bi=       45575
+[dim,aj,bi,aj-dim,bi-dim]=       34831       44183       45575        9352       10744
+monorolling
+numel(hill)=      172800, bi=       45575
+numel(hill)=      172800, bi=       45575
+aj=      45049.0, aj-dim=      10218.0, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      10218.0      526.000
+      172800yBS[dim:bi]=yBS[       34831:       45575]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9352.00      9352.00      10218.0      9596.00
+to zeroth order, guess that MM=       29.046610       1.0000000       9596.0000       36.924998
+2nd order status=       0, chi^2=      0.72718852
+Function parameters:        13.162477      0.99988718       9593.2649       21.079198
+shrunk front by [dim,imin,imin-dim]=       34831       44125        9294
+shrunk back by [bi,imax,bi-imax]=       45575       44905         670
+status=       0, chi^2=       1.1200713
+Function parameters:        9.2259789      0.99227932       297.34159       16.814870
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       26.040849       7.5888914       1150.0000
+      0.10703649
+[imin,ishock,imax]=       44125       44425       44905
+ishock=       44425
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       3
+numel(hill)=      172800, bi=       61803
+[dim,aj,bi,aj-dim,bi-dim]=       51091       60471       61803        9380       10712
+monorolling
+numel(hill)=      172800, bi=       61803
+numel(hill)=      172800, bi=       61803
+aj=      60994.0, aj-dim=      9903.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      9903.00      809.000
+      172800yBS[dim:bi]=yBS[       51091:       61803]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9380.00      9380.00      9903.00      9808.00
+to zeroth order, guess that MM=       16.905397       1.0000000       9808.0000       23.588916
+2nd order status=       0, chi^2=      0.14519555
+Function parameters:        9.5887957      0.99966390       9805.5955       16.650010
+shrunk front by [dim,imin,imin-dim]=       51091       60600        9509
+shrunk back by [bi,imax,bi-imax]=       61803       61380         423
+status=       0, chi^2=      0.65798935
+Function parameters:        7.2246071      0.99298927       298.09299       16.567193
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       23.791800       9.3425857       903.00000
+     0.084297985
+[imin,ishock,imax]=       60600       60900       61380
+ishock=       60900
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       4
+numel(hill)=      172800, bi=       78191
+[dim,aj,bi,aj-dim,bi-dim]=       67579       76951       78191        9372       10612
+monorolling
+numel(hill)=      172800, bi=       78191
+numel(hill)=      172800, bi=       78191
+aj=      77372.0, aj-dim=      9793.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      9793.00      819.000
+      172800yBS[dim:bi]=yBS[       67579:       78191]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9372.00      9372.00      9793.00      9691.00
+to zeroth order, guess that MM=       21.144318       1.0000000       9691.0000       25.504369
+2nd order status=       0, chi^2=      0.34996757
+Function parameters:        10.566360      0.99954875       9687.2027       15.633817
+shrunk front by [dim,imin,imin-dim]=       67579       76971        9392
+shrunk back by [bi,imax,bi-imax]=       78191       77751         440
+status=       0, chi^2=      0.91501862
+Function parameters:        8.7365870     0.039600334       13.224555       16.896832
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       25.633419       8.1602451       886.00000
+     0.083490387
+[imin,ishock,imax]=       76971       77305       77751
+ishock=       77305
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       5
+numel(hill)=      172800, bi=       95055
+[dim,aj,bi,aj-dim,bi-dim]=       84067       93843       95055        9776       10988
+monorolling
+numel(hill)=      172800, bi=       95055
+numel(hill)=      172800, bi=       95055
+aj=      94122.0, aj-dim=      10055.0, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      10055.0      933.000
+      172800yBS[dim:bi]=yBS[       84067:       95055]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9776.00      9776.00      10055.0      10029.0
+to zeroth order, guess that MM=       17.243121       1.0000000       10029.000       22.774687
+2nd order status=       0, chi^2=      0.45193231
+Function parameters:        3.5045656      0.99983474       10026.672       8.4792485
+shrunk front by [dim,imin,imin-dim]=       84067       93795        9728
+shrunk back by [bi,imax,bi-imax]=       95055       94575         480
+status=       0, chi^2=       2.2498416
+Function parameters:        2.3263060      0.96744627       289.87454       7.5800660
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       9.9063720       5.2537599       960.00000
+     0.087368041
+[imin,ishock,imax]=       93795       94095       94575
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       6
+numel(hill)=      172800, bi=      111031
+[dim,aj,bi,aj-dim,bi-dim]=      100923      109767      111031        8844       10108
+monorolling
+numel(hill)=      172800, bi=      111031
+numel(hill)=      172800, bi=      111031
+aj=      110931., aj-dim=      10008.0, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      10008.0      100.000
+      172800yBS[dim:bi]=yBS[      100923:      111031]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      8844.00      8844.00      10008.0      9537.00
+to zeroth order, guess that MM=       11.565701       1.0000000       9537.0000       17.681685
+2nd order status=       0, chi^2=      0.21614601
+Function parameters:        2.8885839       1.0000970       9537.0852       8.7606064
+shrunk front by [dim,imin,imin-dim]=      100923      110159        9236
+shrunk back by [bi,imax,bi-imax]=      111031      110939          92
+status=       0, chi^2=       1.8447966
+Function parameters:        2.3348434       1.0310812       309.73821       9.2484458
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       11.583289       6.9136024       572.00000
+     0.056588840
+[imin,ishock,imax]=      110159      110459      110939
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       7
+numel(hill)=      172800, bi=      127647
+[dim,aj,bi,aj-dim,bi-dim]=      117131      126543      127647        9412       10516
+monorolling
+numel(hill)=      172800, bi=      127647
+numel(hill)=      172800, bi=      127647
+aj=      127054., aj-dim=      9923.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      9923.00      593.000
+      172800yBS[dim:bi]=yBS[      117131:      127647]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9412.00      9412.00      9923.00      9731.00
+to zeroth order, guess that MM=       12.363189       1.0000000       9731.0000       19.198651
+2nd order status=       0, chi^2=      0.11924452
+Function parameters:        7.3671822    0.0064137868       63.212872       14.329712
+shrunk front by [dim,imin,imin-dim]=      117131      126687        9556
+shrunk back by [bi,imax,bi-imax]=      127647      127467         180
+status=       0, chi^2=       1.2903718
+Function parameters:        5.2799449      0.91832948       277.12401       14.356788
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       19.636733       9.0768430       658.00000
+     0.062571317
+[imin,ishock,imax]=      126687      126989      127467
+ishock=      126989
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       8
+numel(hill)=      172800, bi=      144403
+[dim,aj,bi,aj-dim,bi-dim]=      133647      143243      144403        9596       10756
+monorolling
+numel(hill)=      172800, bi=      144403
+numel(hill)=      172800, bi=      144403
+aj=      143648., aj-dim=      10001.0, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      10001.0      755.000
+      172800yBS[dim:bi]=yBS[      133647:      144403]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9596.00      9596.00      10001.0      9859.00
+to zeroth order, guess that MM=       14.328848       1.0000000       9859.0000       18.837983
+2nd order status=       0, chi^2=      0.24987401
+Function parameters:        3.4739795      0.99977863       9857.9742       7.9619417
+shrunk front by [dim,imin,imin-dim]=      133647      143207        9560
+shrunk back by [bi,imax,bi-imax]=      144403      143987         416
+status=       0, chi^2=       1.8787020
+Function parameters:        2.5671834      0.99341989       298.53836       8.1493171
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       10.716501       5.5821337       895.00000
+     0.083209373
+[imin,ishock,imax]=      143207      143508      143987
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+i=       9
+numel(hill)=      172800, bi=      160863
+[dim,aj,bi,aj-dim,bi-dim]=      150047      159383      160863        9336       10816
+monorolling
+numel(hill)=      172800, bi=      160863
+numel(hill)=      172800, bi=      160863
+aj=      159889., aj-dim=      9842.00, numel(yBS)=      172800
+[mono[aj-1],mono[aj],mono[aj+1]=      -0.0000000      -0.0000000      -0.0000000
+      9842.00      974.000
+      172800yBS[dim:bi]=yBS[      150047:      160863]
+[zeron,aj0-dim,aj-dim,aaj-dim]=      9336.00      9336.00      9842.00      9714.00
+to zeroth order, guess that MM=       18.345501       1.0000000       9714.0000       23.192331
+2nd order status=       0, chi^2=      0.20684876
+Function parameters:        6.6222719      0.99991559       9712.4706       11.493128
+shrunk front by [dim,imin,imin-dim]=      150047      159460        9413
+shrunk back by [bi,imax,bi-imax]=      160863      160240         623
+status=       0, chi^2=       1.2576184
+Function parameters:        6.0109043      0.99003432       297.35619       11.998761
+[max,min,remain,fracRemain]=[m3+m0,m3-m0,bi-MM[2],(bi-MM[2])/(bi-dim)]=       18.009665       5.9878566       1103.0000
+      0.10197855
+[imin,ishock,imax]=      159460      159760      160240
+ishock=      159760
+test=       1
+L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-L-
+now for the range nys[0:nBB[0]]=nys[0:       12248]
+[d0,a0,b0]=        1932       10904       12248
+monorolling
+after monorolling
+[imin,a0,imax]=        1933       11349       12248
+numel(hill)=      172800, bi=       12248
+after secondroll
+[imin,a0,imax]=        1933       11349       12248
+        9416         899
+      172800yBS[dim:bi]=yBS[        1933:       12248]
+after aoscillate
+[imin,a0,imax]=        1933       11386       12248
+to zeroth order, guess that MM=       21.563680       1.0000000       9453.0000       29.089842
+       10316       10316       10316
+status, chisq
+       0      0.26260419
+Function parameters
+       7.3115652      0.99996861       9452.9818       14.381504
+[max,min,bi-ishock]
+       21.693069       7.0699386       862.00000
+       1.5975977
+status, chisq
+       0       1.5975977
+Function parameters
+       18.843200    0.0028671358       1.8188495       32.834220
+[imin,ishock,imax]
+       10966       11600       11806
+[max,min,remain,fracRemain]:[m3+m0,m3-m0,bi-ishock,(bi-ishock)*1.0/(bi-dim)]
+       51.677421       13.991020       648.00000      0.24519682
+<*><*><*><*><*><*><*><*><*><*><*><*><*><*><*><*><*><*><*><*>
+Altering tplot variable: 210 B_fitted10_CHISQ_inbound
+Altering tplot variable: 211 B_fitted10_ADJCHISQ_inbound
+Altering tplot variable: 212 B_fitted10_CHISQ_outbound
+Altering tplot variable: 213 B_fitted10_ADJCHISQ_outbound
+Altering tplot variable: 214 B_fitted10_CHISQ
+Altering tplot variable: 215 B_fitted10_ADJCHISQ
+Altering tplot variable: 181 shocks_inbound
+Altering tplot variable: 216 B_fitted10_shocks_inbound
+Altering tplot variable: 182 sublengths_inbound
+Altering tplot variable: 183 sublengths_inbound_begin
+Altering tplot variable: 184 sublengths_inbound_end
+** Structure <65481a8>, 3 tags, length=2764816, data length=2764816, refs=1:
+   X               DOUBLE    Array[172800]
+   Y               DOUBLE    Array[172800]
+   YTITLE          STRING    Array[1]
+Altering tplot variable: 217 B_fitted10_inbound
+Altering tplot variable: 210 B_fitted10_CHISQ_inbound
+Altering tplot variable: 189 sublengths_outbound
+Altering tplot variable: 190 sublengths_outbound_begin
+Altering tplot variable: 191 sublengths_outbound_end
+Altering tplot variable: 187 shocks_outbound
+Altering tplot variable: 218 B_fitted10_shocks_outbound
+Altering tplot variable: 219 B_fitted10_outbound
+Altering tplot variable: 195 shocks
+Altering tplot variable: 220 B_fitted10_shocks
+Altering tplot variable: 221 B_fitted10
+insublengths=       11327       11464       11508       10877       11996       11556       11528       11776       12254
+        8536
+Mean:       11282.2, Variance:       1034.14
+outsublengths=       10816       10516       10612       10712       10744       10608
+Mean:       10668.0, Variance:       109.047
+Altering tplot variable: 222 outnums
+brokenin
+i,dim,bi, xs[dim]-min(xs),xs[bi]-min(xs),m0,m1,m2,m3,MM[0],MM[1],MM[2],MM[3],CHISQ]
+!NULL
+brokenout
+i,dim,bi, nxs[dim]-min(nxs),nxs[bi]-min(nxs),m0,m1,m2,m3,MM[0],MM[1],MM[2],MM[3],CHISQ]
+       0.0000000       8.0000000       6.0000000       5.0000000
+       1933.0000       133647.00       100923.00       84067.000
+       12248.000       144403.00       111031.00       95055.000
+       1933.0000       133647.00       100923.00       84067.000
+       12248.000       144403.00       111031.00       95055.000
+       21.563680       14.328848       11.565701       17.243121
+       1.0000000       1.0000000       1.0000000       1.0000000
+       9453.0000       9859.0000       9537.0000       10029.000
+       29.089842       18.837983       17.681685       22.774687
+       18.843200       2.5671834       2.3348434       2.3263060
+    0.0028671358      0.99341989       1.0310812      0.96744627
+       1.8188495       298.53836       309.73821       289.87454
+       32.834220       8.1493171       9.2484458       7.5800660
+       1.5975977       1.8787020       1.8447966       2.2498416
+.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+		finished creating B_fitted10
+============================================
+% Program caused arithmetic error: Floating underflow
+% Program caused arithmetic error: Floating overflow
+
