@@ -1,0 +1,10 @@
+pro cyclotronperiod
+
+	get_data,'mvn_B_1sec_MAVEN_MSO_Mag',data=datB
+
+	get_data,'mvn_swifa_density_interpolated',/data=datD
+
+	
+
+
+END
