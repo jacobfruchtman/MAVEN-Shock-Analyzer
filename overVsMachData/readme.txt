@@ -1,0 +1,1 @@
+These are the shock data for each date as built by the code. Files ending in "O" are old versions before being redone with slightly improved code to handle issues on that day. Those ending in "N" were days where this was attempted only for the older versions to be more accurate than the new.
