@@ -231,7 +231,7 @@ pro downstreamcalc
 
 		IF (bfdiffI[imax-1] ge .25 and max(smallfracdiffI[ishock:imax]) gt 5*60.) then begin
 			imaxt=(where(smallfracdiffI[ishock:imax] eq	max(smallfracdiffI[ishock:imax],mxcnt)))[-1]+ishock
-			
+				;;BEYOND THIS POINT, THE B-FIELD DIVERGES / BECOMES ILL BEHAVED ENOUGH FROM THE FIT SIGNIFICANTLY ENOUGH THAT IT CAN BE NEGLECTED OUT OF HAND
 				for kk=imaxt+1,min([imax,N-1]) do begin
  					allimaxs[kk]=-1
 					FFI[kk]=0
@@ -250,7 +250,7 @@ pro downstreamcalc
 		endif else begin
 			IF (fmmd[imax-1] ge .20 and max(smallerfracdiffI[ishock:imax]) ge 5*60.) then begin
 			imaxt=(where(smallerfracdiffI[ishock:imax] eq	max(smallerfracdiffI[ishock:imax],mxcnt)))[-1]+ishock
-			
+				;;BEYOND THIS POINT, THE B-FIELD DIVERGES / BECOMES ILL BEHAVED ENOUGH FROM THE FIT SIGNIFICANTLY ENOUGH THAT IT CAN BE NEGLECTED OUT OF HAND
 				for kk=imaxt+1,min([imax,N-1]) do begin
  					allimaxs[kk]=-1
 					FFI[kk]=0
@@ -272,7 +272,7 @@ pro downstreamcalc
 		endelse
 
 		if ishock ge imax-t or total(finite(BB[ishock:imax]) eq 0) ne 0 or (maxnegblock lt 0 and (-1.0*maxnegblock/(imax-ishock) gt .4 or -1* maxnegblock ge 10*60  )  ) then begin
-
+			;;In this case, there's no way we can find an overshoot or downstream interval. Everything will be blow up if we try to conduct measurements on it so no point in measuring. Just throw the crossing out.
 			FFI[imin:imax]=0
 			allimaxs[imin:imax]=-1
 			;indowns[imin:imax]=0
@@ -731,8 +731,8 @@ pro downstreamcalc
 		ishock=slo[el]
 		imax=max([omaxs[el],omins[el]])
 		imin=min([omaxs[el],omins[el]]);omins[el]
-
-		print,time_string(xs[N-1-i])
+		i=ishock
+		print,time_string(xs[N-1-ishock])
 
 		smallfracdiffO=onofflength(BfdiffO lt .1)
 		BfdiffO=fracdiff(FFO,nmm)
@@ -1449,4 +1449,5 @@ pro downstreamcalc
 	;tplot,'bfou',/add
 
 end
+
 
