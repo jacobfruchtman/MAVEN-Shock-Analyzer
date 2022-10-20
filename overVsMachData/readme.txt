@@ -1,0 +1,1 @@
+GitHub can only support 1000 files in one directory. In order to save everyhting here, we move each year into its own directory. If you want to use these files after downloading them, move everything from the subdirectories into this directory.
