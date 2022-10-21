@@ -1,0 +1,1 @@
+These are the plots where the time-averaged magnetic field in the downstream measuring interval is a much better characterization of the overall downstream field than the fit (and where substituting values for B_downstream therefore allows for more accurate statistical measurements).
