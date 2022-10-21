@@ -1,0 +1,1 @@
+These are the plots where the time-averaged magnetic field in the upstream measuring interval is a much better characterization of the overall upstream field than the fit (and where substituting values therefore allows for more accurate statistical measurements).
