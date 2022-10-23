@@ -59,7 +59,7 @@ The raw quantities (plus M_crit which takes a while to calculate) for our aggrag
 
 
 
--FIT parameters:m0,m1,m2,m3 (in nT,Hz,sec,nT)
+-FIT parameters:m0,m1,m2,m3 (in nT,Hz,sec,nT): Bfit(t)=m0 tanh(m1(t-m2))+m3
 
 -FIT B_down and B_up (in nT)
 
