@@ -339,6 +339,7 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 	badMeasure=0
 	badManual=0
 	badLS=0
+	badVdNs=0
 	badSheath=0. ;;where no clear sheath structure exists (too noisy to make out anything) key: S
 	badPhenomena=0. ;;where too much complex stuff is happening to clearly define things   key: P
 	badStep=0. ;;where the downstream interval suddenly drops within the downstream interval from semi-flat to something else key:%
@@ -396,7 +397,13 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 	bigWidths=list()
 	
 	smallAs=list()
-	
+
+	GmismatchMs=list()
+	GmismatchBetas=list()
+	GmismatchDops=list()
+	BmismatchMs=list()
+	BmismatchBetas=list()
+	BmismatchDops=list()
 	for i=0,numPlots-1 do begin
 		;
 		error_status=0
@@ -440,6 +447,8 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 		t00=time_double(date)
 		;help,dat
 		;return
+		;if  dat.t[0] lt time_double('2015-08-12') then continue
+		;if  dat.t[0] gt time_double('2015-08-13') then return
 		if dat.t[0] ge time_double('2019-11-16/00:00:00') or H[i] eq 'OverVsMach_2019-11-16.tplot' or t00 ge time_double('2019-11-16/00:00:00') then break
 
 		;newBins=medianator(dat)
@@ -522,12 +531,13 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 			;return
 		endif
 
-		if 0 and dat.t[0] lt time_double('2018-09-16') then begin
+		if 0 and dat.t[0] lt time_double('2015-08-12') then begin
 			print,"goodpoint/points=",goodPoints,"/",points
 					print,"[baddists,baddots,badFMs,badBmax,BadManual,badLS,badMeasure,missedAnomolies]:"
 			print,[baddists,baddots,badFMs,badBmax,BadManual,badLS,badMeasure,missedanomolies]
 			del_data,name
-			continue;break
+			;continue;break
+			return
 		endif	
 		if 0 and numel(dat.t) eq 1 and H[i] ne 'OverVsMach_2015-07-14.tplot' then begin
 			print,H[i]
@@ -605,7 +615,7 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 			instruct=instructlist[listloc]
 			print,instruct
 
-			N_SN=dat.N_SN[j,*]
+			N_SN=transpose(dat.N_SN[j,*])
 
 			nurm=sqrt(N_SN[0]^2+N_SN[1]^2+N_SN[2]^2)
 			if nurm ne 1. then begin
@@ -869,6 +879,11 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 			upM=dat.downMeasured[j]
 			downM=dat.upMeasured[j] ; yes. I know. Need to fix the mix up later
 			dop=dat.shock0Acc[j]
+			dop0=dat.shock0Acc0[j]
+			if dop ne dop0 then begin
+				print,'[dop,dop0]=',[dop,dop0]
+				print,'[th,th0]=',[th,90-abs(dat.th0[j]*180/!pi-90)]
+			endif
 			dist0=dat.shock0dist[j]
 			dum=downM/upM
 			downup=dat.downups[j]
@@ -899,6 +914,32 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 			Tion=dat.T_ion[j]
 			Beta_ion=dat.beta_ion[j]
 			Telec=Tion*(bta/Beta_ion -1.)
+			
+			
+			N_conic=transpose(dat.N_conic[j,*])
+			POSconic=transpose(dat.pos_conic[j,*])
+
+			Vdvec=transpose(dat.Vdvec[j,*])
+			Vuvec_fine=transpose(dat.Vuvec_fine[j,*])
+			Vuvec_coarse=transpose(dat.Vuvec_coarse[j,*])
+			
+			Buvec=transpose(dat.Buvec[j,*])
+			Bdvec=transpose(dat.Bdvec[j,*])
+
+			if NSNexists then N_SN=transpose(dat.N_SN[j,*]) else begin
+
+				N_SN=normalrefinder( Buvec,theta,Vuvec_coarse,dat.flowangle[j],MSO,N_conic,dop)
+				if (size(N_SN,/n_dim))[0] eq 2 then N_SN=transpose(N_SN)
+			endelse
+			
+			VuN=dotproduct(N_SN,Vuvec_fine)
+			VdN=dotproduct(N_SN,Vdvec)
+			if VdN/VuN le 0.0 then begin
+				badVdNs++
+				badPoint=1;
+				if keyword_set(keepPathologies) then continue
+			
+			endif
 
 			if Telec eq 0 or finite(Telec) ne 1 then begin
 				print,"Telec=",Telec
@@ -922,6 +963,7 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 				print,"badMfms,",mfms,xt
 				;print,"badFMs"
 				badPoint=1;
+				
 				if keyword_set(keepPathologies) then continue
 			endif
 			T_rat=1.0 * Telec/Tion
@@ -973,12 +1015,17 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 			endif
 
 			if dop lt mindop then begin
-				;print,"mindop=",dop
+				print,"dop=",dop
 				baddots++
 				badPoint=1;continue
+				if dop0 ge mindop then BmismatchDops.add,anomtext+';;'+strtrim(dop0)+"->"+strtrim(dop)
 				continue
+			endif else if dop0 lt mindop then begin
+				GmismatchDops.add,anomtext+';;'+strtrim(dop0)+"->"+strtrim(dop)
+				
 			endif
 			if bta gt betamaxallowed then begin;or Beta_ion gt betamaxallowed/2.  then begin
+				print,'bad beta=',bta
 				badbeta++
 				badPoint=1
 				print,xt
@@ -1013,6 +1060,7 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 			endif
 			if (killBigFM) and (FM ge maxAllowedFM) then begin
 				badFMs++
+				print,'bad FM=',FM
 				;print,"badFMs"
 				badPoint=1;
 				if keyword_set(keepPathologies) then continue
@@ -1177,21 +1225,8 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 
 			
 
-			N_conic=transpose(dat.N_conic[j,*])
-			POSconic=transpose(dat.pos_conic[j,*])
+			
 
-			Vdvec=transpose(dat.Vdvec[j,*])
-			Vuvec_fine=transpose(dat.Vuvec_fine[j,*])
-			Vuvec_coarse=transpose(dat.Vuvec_coarse[j,*])
-
-			Buvec=transpose(dat.Buvec[j,*])
-			Bdvec=transpose(dat.Bdvec[j,*])
-
-			if NSNexists then N_SN=transpose(dat.N_SN[j,*]) else begin
-
-				N_SN=normalrefinder( Buvec,theta,Vuvec_coarse,dat.flowangle[j],MSO,N_conic,dop)
-				if (size(N_SN,/n_dim))[0] eq 2 then N_SN=transpose(N_SN)
-			endelse
 
 			;print,"good point"
 			if maxViableFM lt FM then begin
@@ -1338,6 +1373,7 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 		print, badNANs,baddists,baddots,badFMs,badBmax,badLS,badMeasure,badMfms,badbeta,badDens,badMMs,format='(I7,",",I8,",",I7,",",I6,",",I7,",",I5,",",I10,",",I7,",",I7,",",I7,",",I6)'
 		print,"[missedAnomolies,BadManual,missedManual,Crust,Multi,Large Instability,Nonlocal,badOvers,thinOvers,inFoot,badSlope]"
 		print,missedAnomolies,BadManual,missedManual,badCrusts,badMultis,badInstab,nonlocals,inOvers,thinOvers,badFoots,badSlope,format='(I15,",",I9,",",I12,",",I5,",",I5,",",I17,",",I9,",",I8,",",I9,",",I6,",",I8)'
+		print,'badVdNs=',badVdNs
 		if size(LsLst,/typ) eq 0 then begin
 				print,xt
 				print,H[i]
@@ -1346,8 +1382,13 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 		endif
 		del_data,name
 		;seasons.add,marsSeasonFinder(dLs,dat.lat)
+		;return
 	endfor
 	TOC,clockld
+	
+	
+	
+	
 	print,"finished binning data"
 
 	;foreach nm,plotFNames do print,"name=",nm
@@ -1370,6 +1411,7 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 	print, badNANs,baddists,baddots,badFMs,badBmax,badLS,badMeasure,badMfms,badbeta,badDens,badMMs, format='(I7,",",I8,",",I7,",",I6,",",I7,",",I5,",",I10,",",I7,",",I7,",",I7,",",I6)'
 		print,"[missedAnomolies,BadManual,missedManual,Crust,Multi,Large Instability,Nonlocal,badOvers,thinOvers,inFoot]"
 		print,missedAnomolies,BadManual,missedManual,badCrusts,badMultis,badInstab,nonlocals,inOvers,thinOvers,badFoots, format='(I15,",",I9,",",I12,",",I5,",",I5,",",I17,",",I9,",",I8,",",I9,",",I6)'
+			print,'badVdNs=',badVdNs
 	print,'numnoconic=',numnoconic
 	;if numnoconic lt 100 then foreach el,noconiclst do print,el
 	;if numnoconic gt 500 then return
@@ -1424,6 +1466,24 @@ pro overvmachplotter,islast=islast,currtime=currtime,REMOVENEGATIVES=REMOVENEGAT
 
 	endfor
 	close,1	
+
+
+	openW,1,'Documents/ChangedDops.txt'
+		if N_elements(GmismatchDops) gt 0 or N_elements(BmismatchDops) gt 0 then begin
+			if N_elements(GmismatchDops) gt 0 then begin
+				printf,1,'points where dop previously bad dop and now good:'
+				printf,1,'~~~~'
+				foreach el,GmismatchDops do printf,1,el
+				printf,1,'========='
+			endif
+			if N_elements(BmismatchDops) gt 0 then begin
+				printf,1,'points where dop previously good dop and now bad:'
+				printf,1,'~~~~'
+				foreach el,BmismatchDops do printf,1,el
+			endif
+		endif else printf,1,'no points where dop changes acceptance'
+	close,1	
+
 
 	;print,"mean(theta_rejected),median(theta_rejected),stddev:",mean(badthetaVals),median(badthetaVals),stddev(badthetaVals)
 	;print,"mean(theta_Auto-rejected),median(theta_Auto-rejected),stddev:",mean(badthetaAutoVals),median(badthetaAutoVals),stddev(badthetaAutoVals)
@@ -2187,6 +2247,7 @@ store_data,'SZAd',data={x:t,y:SZA*180./!pi,ytitle:'SZA [deg]',YN:'Solar Zenith A
 	
 	
 	store_data,'Azimuth',data={x:t,y:Azimuth,ytitle:'$\phi_{MSO} [rad]$',YN:'Azimuthal Angle',fn:'Azimuth',degree:[0],radian:[1],vec:[0],binsize:[10*!pi/180]}
+	store_data,'n_conic_cyl',data={x:t,y:N_Conic_cyl,ytitle:'Conic Normal Vector (Cylindrical)',YN:'Conic Normal',fn:'N_conic',binsize:.1,radian:[0],degree:[0],vec:[1]}
 	store_data,'n_conic',data={x:t,y:N_conic,ytitle:'Conic Normal Vector',YN:'Conic Normal',fn:'N_conic',binsize:.1,radian:[0],degree:[0],vec:[1]}
 	store_data,'pointsperday',data={x:t,y:perdaylst,ytitle:"# saved crossings on day",YN:'Saved Crossings',fn:"numcrossings",binsize:[1],radian:[0],degree:[0]}
 	store_data,'invMM1s',data={x:t,y:invMM1s,ytitle:'$1/m_1$ [sec]',YN:'inverse fit param1',fn:"invMM1",binsize:[10],radian:[0],degree:[0]}
@@ -2206,6 +2267,8 @@ store_data,'SZAd',data={x:t,y:SZA*180./!pi,ytitle:'SZA [deg]',YN:'Solar Zenith A
 	store_data,"Pitch_Angle_rad",data={x:t,y:Pitch,ytitle:['Pitch Angle $\alpha=\theta_{B_1V_1}$ [rad]'],YN:['Pitch Angle'], fn:['Pitch_Rad'],  binsize:[5*!pi/180],radian:[1],degree:[0]}
 	store_data,"Pitch_Angle",data={x:t,y:PitchD,ytitle:['Pitch Angle $\alpha=\theta_{B_1V_1}$ [deg]'],YN:['Pitch Angle'], fn:['Pitch_Deg'],  binsize:[5],radian:[1],degree:[0]}
 	store_data,"cos_Pitch_Angle",data={x:t,y:cosPitch,ytitle:['Pitch Angle cos$\alpha=$cos$\theta_{B_1V_1}$'],YN:['Pitch Angle'], fn:['Pitch_cos'],  binsize:[.1],radian:[0],degree:[0]}
+	
+	store_data,'MMs',data={x:t,y:MMs,ytitle:'{m}_j',YN:'MMs',fn:'MMs',binsize:1,radian:0,degree:0}
 if 0 then begin
 	store_data,'usPOS',data={x:t,y:usPOS,ytitle:'upstream start measure position (MSO) [km]',YN:'upstream position 1',fn:'usPOS',binsize:500,radian:[0],degree:[0]}
 	store_data,'uPOS',data={x:t,y:umPOS,ytitle:'upstream measure position (MSO) [km]',YN:'upstream position',fn:'uPOS',binsize:500,radian:[0],degree:[0]}
@@ -2245,7 +2308,7 @@ endif
 	YN='($\beta^{top}_{quart}\le$'+strtrim(lowerquartpart,2)+') '
 	print,YN
 	store_data,'where_beta_lowerquartile',data={x:t,y:wheretoflag(wherebetalowerq,N),YN:[YN], fn:['lowerbetaquart_']}
-
+	
 
 
 endif
@@ -2300,7 +2363,7 @@ endif
 		printf,1, badNANs,baddists,baddots,badFMs,badBmax,badLS,badMeasure,badMfms,badbeta,badDens,badMMs, format='(I7,",",I8,",",I7,",",I6,",",I7,",",I5,",",I10,",",I7,",",I7,",",I7,",",I6)'
 			printf,1,"[missedAnomolies,BadManual,missedManual,Crust,Multi,Large Instability,Nonlocal,badOvers,thinOvers,inFoot,badSlope]"
 		printf,1,missedAnomolies,BadManual,missedManual,badCrusts,badMultis,badInstab,nonlocals,inOvers,thinOvers,badFoots,badSlope,format='(I15,",",I9,",",I12,",",I5,",",I5,",",I17,",",I9,",",I8,",",I9,",",I6,",",I8)'
-
+		print,'badVdNs=',badVdNs
 ;	totquasipar=0.;
 ;	totquasiperp=0.
 ;	goodquasipar=0.
