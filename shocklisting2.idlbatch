@@ -82,7 +82,7 @@ foreach el,w[0:40] do print,Alfven[el]," , ",AlfCalc[el] ," , ",AlfvenFdiff[el],
 mflowplot
 ;exit
 
-store_data,"Mfms2",data={x:datVN.x,y:Mfms2,ytitle:['$M_{fms}$'],YN:['$M_{fms}$'], fn:["Mfms2"],  binsize:[1.],radian:[0],degree:[0]}
+store_data,"Mfms2",data={x:datupM.x,y:Mfms2,ytitle:['$M_{fms}$'],YN:['$M_{fms}$'], fn:["Mfms2"],  binsize:[1.],radian:[0],degree:[0]}
 get_data,'Mfms',data=datMfms
 Mfms=datMfms.y
 p1=scatterplot(Mfms2,Mfms2/Mfms,ytitle='Mfms2/Mfms1',xtitle='Mfms2')
@@ -91,7 +91,7 @@ p1.save,'Documents/mfms2vmfms.png'
 get_data,'Mflow',data=datMflow
 Mflow=datMflow.y
 FMflow=Mflow/Mcrit
-store_data,"FMflow",data={x:datVN.x,y:FMflow,ytitle:['$M_{flow}/M_{crit}$'],YN:['$M_{fms}/M_{crit}$'], fn:["FMflow"],  binsize:[1.],radian:[0],degree:[0]}
+store_data,"FMflow",data={x:datupM.x,y:FMflow,ytitle:['$M_{flow}/M_{crit}$'],YN:['$M_{fms}/M_{crit}$'], fn:["FMflow"],  binsize:[1.],radian:[0],degree:[0]}
 
 get_data,'Ls',data=datLS
 LS=datLS.y
@@ -236,19 +236,22 @@ downfdiff=fracdiff(down,downM)
 store_data,'downfdiff',data={x: t ,y: downfdiff ,ytitle:[ '%diff $B^{FIT}_{DOWN},B^{Meas}_{DOWN}$' ], YN:[ '%diff $B^{FIT}_{DOWN},B^{Meas}_{DOWN}$ ' ], fn:[ 'upMBumagfdiff' ], binsize:[ .1 ], radian:[0],degree:[0]}
 aggramissingadd
 
+tplot_element,'POS','y',POS
+tplot_element,'POS','x',t
 
 get_data,'n_conic_cyl',data=datNCyl
+;store_data,'n_conic_cyl',data=datNCyl
 t=datNCyl.x
 NconicCyl=datNCyl.y
-get_data,'POSCONIC',data=datPOSCON
-PosCyl=datPOSCON.y
-ConRho=PosCyl[*,0]
-NConRho=NconicCyl[*,0]
+;get_data,'POSCONIC',data=datPOSCON
+;PosCyl=datPOSCON.y
+;ConRho=PosCyl[*,0]
+;NConRho=NconicCyl[*,0]
 N=numel(datNCyl.x)
 tplot_element,'Y_MSO','y',YMSO
 tplot_element,'Z_MSO','y',ZMSO
-Azimuth=atan(YMSO,ZMSO)
-store_data,'Azimuth',data={x:t,y:Azimuth,ytitle:'$\phi_{MSO} [rad]$',YN:'Azimuthal Angle',fn:'Azimuth',degree:[0],radian:[1],vec:[0],binsize:[10*!pi/180]}
+;Azimuth=atan(YMSO,ZMSO)
+;store_data,'Azimuth',data={x:t,y:Azimuth,ytitle:'$\phi_{MSO} [rad]$',YN:'Azimuthal Angle',fn:'Azimuth',degree:[0],radian:[1],vec:[0],binsize:[10*!pi/180]}
 tplot_element,'X_MSO','y',XMSO
 tplot_element,'Y_MSO','y',YMSO
 tplot_element,'Z_MSO','y',ZMSO
@@ -260,33 +263,38 @@ TH_MSO=atan(SQRT(XMSO^2+YMSO^2),ZMSO)
 store_data,'TH_MSO',data={x:t,y:TH_MSO,ytitle:'$\theta_{MSO}=atan(\sqrt{X^2+Y^2}/Z)$ [rad]',YN:'LatMSO',fn:'latMSO',degree:[0],radian:[1],vec:[0],binsize:[10*!pi/180]}
 
 
-ConX=NconicCyl[*,2]
-conY=0.0*conx
-conz=cony
-for i=0,N-1 do conY[i]=NConRho[i]*cos(Azimuth[i])
-for i=0,N-1 do conZ[i]=NConRho[i]*sin(Azimuth[i])
-n_conic=fltarr(N,3)
-NN=Sqrt(ConX^2+conY^2+conZ^2)
-for i=0,N-1 do conX[i]/=NN[i]
-for i=0,N-1 do conY[i]/=NN[i]
-for i=0,N-1 do conZ[i]/=NN[i]
-n_conic[*,0]=ConX
-n_conic[*,1]=ConY
-n_conic[*,2]=ConZ
-store_data,'n_conic',data={x:t,y:n_conic,ytitle:"Conic normal",YN:'Conic Normal',fn:'N_CONIC',binsize:[.1],degree:0,radian:0,vec:[1]}
+;ConX=NconicCyl[*,2]
+;conY=0.0*conx
+;conz=cony
+;for i=0,N-1 do conY[i]=NConRho[i]*cos(Azimuth[i])
+;for i=0,N-1 do conZ[i]=NConRho[i]*sin(Azimuth[i])
+;n_conic=fltarr(N,3)
+;NN=Sqrt(ConX^2+conY^2+conZ^2)
+;for i=0,N-1 do conX[i]/=NN[i]
+;for i=0,N-1 do conY[i]/=NN[i]
+;for i=0,N-1 do conZ[i]/=NN[i]
+;n_conic[*,0]=ConX
+;n_conic[*,1]=ConY
+;n_conic[*,2]=ConZ
+;store_data,'n_conic',data={x:t,y:n_conic,ytitle:"Conic normal",YN:'Conic Normal',fn:'N_CONIC',binsize:[.1],degree:0,radian:0,vec:[1]}
 
+
+tplot_element,'POS','y',POS                         
+tplot_element,172,'y',NconicCyl             
 
 get_data,'Buvec',data=datBuvec
 Buvec=datBuvec.y
+BuCyl=cart2cyl(Buvec,POS)   
 get_data,'n_conic',data=datNconic
 n_conic=datNconic.y
 N=numel(datNconic.x)
 thCon=fltarr(N)
-Buconic=dotproduct(Buvec,n_conic)
+
+Buconic=dotproduct(BuCyl,NconicCyl);n_conic)
 Bun=fltarr(N)
 t=datBuvec.x
 for i=0,N-1 do Bun[i]=sqrt(total(Buvec[i,*]^2))
-Bunorm=Buconic/Bun
+;Bunorm=Buconic/Bun
 for i=0,N-1 do thCon[i]=acos(Buconic[i]/Bun[i])
 help,thCon
 store_data,'thetaBconicRad',data={x:t,y:thCon,ytitle:'$\theta_{B Nconic}=acos(\bf B_U\cdotN_{conic}\rm/|B_U|)$ [rad]',YN:'Conic Shock Angle',fn:'thConRad',degree:[0],radian:[1],vec:[0],binsize:(!pi*5/180)}
@@ -296,11 +304,12 @@ store_data,'thetaBconic',data={x:t,y:thConDn,ytitle:'$\theta_{B Nconic}=acos(\bf
 
 get_data,'Velocity_fine',data=datVuvec
 Vuvec=datVuvec.y
-get_data,'n_conic',data=datNconic
+;get_data,'n_conic',data=datNconic
 n_conic=datNconic.y
 N=numel(datNconic.x)
 thVCon=fltarr(N)
-Vuconic=dotproduct(Vuvec,n_conic)
+VuCyl=cart2cyl(Vuvec,POS)                    
+Vuconic=dotproduct(VuCyl,NconicCyl);Vuvec,n_conic)
 Vun=fltarr(N)
 t=datBuvec.x
 for i=0,N-1 do Vun[i]=sqrt(total(Vuvec[i,*]^2))
@@ -362,8 +371,9 @@ store_data,'Vd_N',data={x:t,y:Vd_N,ytitle:'$\langle\bf V\rm\rangle_D\cdot \bf N\
 
 tplot_element,'Vdvec','y',vdvec
 tplot_element,'n_conic','y',n_conic
-
-Vdconic=dotproduct(vdvec,N_conic)
+VdCyl=cart2cyl(Vdvec,POS)                    
+Vdconic=dotproduct(VdCyl,NconicCyl);Vuvec,n_conic)
+;Vdconic=dotproduct(vdvec,N_conic)
 store_data,'Vdconic',data={x:t,y:Vdconic,ytitle:'$\langle\bf V\rm\rangle_D\cdot \bf N\rm_{CONIC}$',YN:'$V_{D CONIC}$',fn:'Vdconic',vec:[0],degree:[0],radian:[0],binsize:[100]}
 
 tplot_element,'Velocity_N','y',VuN
@@ -408,9 +418,12 @@ tplot_element,'Vdconic','y',VdC
 tplot_element,'thetaBconic','x',t
 mxVd=max(VdC,mxlc)
 bdt=t[mxlc]
+time_string(bdt)
 
-tplot_element,10,'y',TH
-tplot_element,'thetaBconic','y',thCon
+;aggrafilter,10,99999,teq=bdt
+
+;tplot_element,10,'y',TH
+;tplot_element,'thetaBconic','y',thCon
 
 THdiff=thCon-TH
 store_data,'THdiff',data={x:t,y:THdiff,ytitle:'$\theta_{B Conic}-\theta_{BN}$ [deg]',YN:'Theta Difference',fn:'thdiff',binsize:5,vec:[0],degree:[0],radian:[0]}
@@ -574,7 +587,7 @@ MAfdiff=fracdiff(MA_RH,MA)
 store_data,'MAfdiff',data={x:t,y:MAfdiff,ytitle:'$2|M_A^{RH}-M_A|/(M_A^{RH}+M_A)$',YN:'$2|M_A^{RH}-M_A|/(M_A^{RH}+M_A)$',fn:'MAfdiff',binsize:[.2],radian:[0],degree:[0],vec:[0]}
 
 print,max(MAratio)-1
-pritn,1-min(MAratio)
+print,1-min(MAratio)
 tplot_element,13,'y',beta_i
 tplot_element,14,'y',beta_e
 
@@ -641,3 +654,9 @@ tbins[w3]=3
 tbins[w2]=2
 tbins[w1]=1
 store_data,'time_quartiles',data={x:t,y:tbins,YN:'Time Quartiles',fn:'timequartiles'}
+
+
+tplot_save,name,filename="Documents/overVsMachData/aggragated51"
+corlister
+rs_season_table
+aggra2txt
