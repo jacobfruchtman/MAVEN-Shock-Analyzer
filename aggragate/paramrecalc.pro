@@ -50,7 +50,7 @@ function paramrecalc,dat
  	Buvec=dat.Buvec
  	Bdvec=dat.Bdvec
  	Vdvec=dat.Vdvec
- 	Vuvec=dat.VUVEC_COARSE
+ 	Vuvec=dat.VUVEC_Fine
 	POS=dat.pos
 	N_SN=N_SN0
 	S0n=dat.N_conic
@@ -71,11 +71,11 @@ function paramrecalc,dat
 		db=bd-bu
 	;	;print,"dB=",dB
 	;	;print,''
-		SN=shocknorm(BD,BU,dB)
+		;SN=shocknorm(BD,BU,dB)
 		SN_MX1 =shocknorm(BU,dv,dB)
 		SN_MX2=shocknorm(BD,dv,dB)
 		SN_MX3=shocknorm(dB,dv,dB)
-		VdNmc=dotproduct(SN,Vd)
+		;VdNmc=dotproduct(SN,Vd)
 		
 	;	;print,"N_MC(BD,BU,dB)=",SN
 				;n_SN[i,*]=
@@ -92,7 +92,7 @@ function paramrecalc,dat
 	;	;print,''
 	;	;print,"POS=",Pos[j,*]
 	;	;print,''
-		n_SNcyl=carttocyl_instant(SN,Pos[j,*])
+		;n_SNcyl=carttocyl_instant(SN,Pos[j,*])
 	;	;print,"N_MC_CYL=",n_SNcyl
 		n_SN1cyl=carttocyl_instant(SN_MX1,Pos[j,*])
 	;	;print,"N1_CYL=",n_SN1cyl
@@ -102,7 +102,7 @@ function paramrecalc,dat
 	;	;print,"N3_CYL=",n_SN3cyl
 	;	;print,''
 	;	;print,'N_conic=',S0n[j,*]
-		n_SN_Acc=vecDotProduct(n_SNcyl,S0n[j,*])
+		;n_SN_Acc=vecDotProduct(n_SNcyl,S0n[j,*])
 	;	;print,'Nmc.Nconic=',n_SN_Acc
 		n_SN_MX1_Acc=vecDotProduct(n_SN1cyl,S0n[j,*])
 	;	;print,'Nmx1.Nconic=',n_SN_MX1_Acc
@@ -110,22 +110,22 @@ function paramrecalc,dat
 	;	;print,'Nmx2.Nconic=',n_SN_MX2_Acc
 		n_SN_MX3_Acc=vecDotProduct(n_SN3cyl,S0n[j,*])
 	;	;print,'Nmx3.Nconic=',n_SN_MX3_Acc
-		if n_SN_Acc le 0 then begin
+		;if n_SN_Acc le 0 then begin
 	;		;print,'MC reversed'
-			ntemp=-1*SN
+			;ntemp=-1*SN
 	;		;print,'NtempMC=',ntemp
-			n_SNcyltemp=carttocyl_instant(Ntemp,Pos[j,*])
+			;n_SNcyltemp=carttocyl_instant(Ntemp,Pos[j,*])
 	;		;print,'Ncyl=',n_SNcyltemp
-			acctemp=vecDotProduct(n_SNcyltemp,S0n[j,*])
+			;acctemp=vecDotProduct(n_SNcyltemp,S0n[j,*])
 	;		;print,'Ntemp.Nconic=',acctemp
-			if acctemp gt n_SN_ACC then begin
+			;if acctemp gt n_SN_ACC then begin
 	;			;print,'updating to new'
-				SN=ntemp
-				n_SNcyl=n_SNcyltemp
-				n_SN_ACC=acctemp
+				;SN=ntemp
+				;n_SNcyl=n_SNcyltemp
+				;n_SN_ACC=acctemp
 			
-			endif
-		endif
+			;endif
+		;endif
 		if n_SN_MX1_Acc le 0 then begin
 	;		;print,'MX1 reversed'
 			ntemp=-1*SN_MX1
@@ -174,7 +174,7 @@ function paramrecalc,dat
 			endif
 		endif
 		
-		VdNmc=dotproduct(SN,Vd)
+		;VdNmc=dotproduct(SN,Vd)
 		
 	;	;print,"N_MC(BD,BU,dB)=",SN
 				;n_SN[i,*]=
@@ -187,7 +187,7 @@ function paramrecalc,dat
 	;	;print,"N_MX2(BD,dV,dB)=",SN_MX2
 
 		VdN3=dotproduct(SN_MX3,Vd)
-		VuNmc=dotproduct(SN,Vu)
+		;VuNmc=dotproduct(SN,Vu)
 		
 	;	;print,"N_MC(BD,BU,dB)=",SN
 				;n_SN[i,*]=
@@ -200,12 +200,14 @@ function paramrecalc,dat
 	;	;print,"N_MX2(BD,dV,dB)=",SN_MX2
 
 		VuN3=dotproduct(SN_MX3,Vu)
-		VdNs=[VdNmc,VdN1,VdN2,VdN3] 
-		VuNs=[VuNmc,VuN1,VuN2,VuN3] 
+		;VdNs=[VdNmc,VdN1,VdN2,VdN3] 
+		;VuNs=[VuNmc,VuN1,VuN2,VuN3] 
+		VdNs=[VdN1,VdN2,VdN3] 
+		VuNs=[VuN1,VuN2,VuN3] 
 		;print,'[VdNmc,VdN1,VdN2,VdN3]:',[VdNmc,VdN1,VdN2,VdN3] 
 		;print,'[VuNmc,VuN1,VuN2,VuN3]:',[VuNmc,VuN1,VuN2,VuN3] 
 		ww2=where(finite(VdNs) eq 1,wcount2)
-		if wcount2 eq 0 then ww2=[0,1,2,3]
+		;if wcount2 eq 0 then ww2=[0,1,2,3]
 		;print,'ww2=',ww2
 		ww1=where(abs(VdNs/VuNs) lt 1 and VdNs lt 10,wcount1,ncomp=nwc1,complement=nw1) 
 		;print,'VdNs/VuNs:',VdNs/VuNs
@@ -216,14 +218,17 @@ function paramrecalc,dat
 		;print,'ww=',ww
 		wcount=N_elements(ww)
 		;print,[SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]]
-		N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
+;		N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
+		N1avg=mean(([SN_MX1[0],SN_MX2[0],SN_MX3[0]]),/nan)
 		;print,''
 		;print,'Navg1=',N1avg
 		;print,[SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]]
-		N2avg=mean(([SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)		
+		;N2avg=mean(([SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)		
+		N2avg=mean(([SN_MX1[1],SN_MX2[1],SN_MX3[1]]),/nan)		
 		;print,'Navg2=',N2avg
 		;print,[SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]]
-		N3avg=mean(([SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
+;		N3avg=mean(([SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
+		N3avg=mean(([SN_MX1[2],SN_MX2[2],SN_MX3[2]]),/nan)
 		;print,'Navg3=',N3avg
 		Navg=[N1avg,N2avg,N3avg]
 		;print,''
@@ -237,88 +242,96 @@ function paramrecalc,dat
 		
 		n_AVGcyl=carttocyl_instant(NAVG,Pos[j,*])
 		dop=dotproduct(N_AVGcyl,S0n[j,*])
-		dopmc=dotproduct(SN,NAVG)
+		;dopmc=dotproduct(SN,NAVG)
 		use0=total(ww eq 0)
-		if dop lt .6 then begin
+		;if 0 and dop lt .6 then begin
 		;print,''
 			;print,'try without N_MC'
-			N1avg=mean([SN_MX1[0],SN_MX2[0],SN_MX3[0]],/nan)
+			;N1avg=mean([SN_MX1[0],SN_MX2[0],SN_MX3[0]],/nan)
 		;print,'Navg1=',N1avg
 		;print,[SN_MX1[1],SN_MX2[1],SN_MX3[1]]
-			N2avg=mean([SN_MX1[1],SN_MX2[1],SN_MX3[1]],/nan)		
+			;N2avg=mean([SN_MX1[1],SN_MX2[1],SN_MX3[1]],/nan)		
 		;print,'Navg2=',N2avg
 		;print,[SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]]
-			N3avg=mean([SN_MX1[2],SN_MX2[2],SN_MX3[2]],/nan)
+			;N3avg=mean([SN_MX1[2],SN_MX2[2],SN_MX3[2]],/nan)
 		;print,'Navg3=',N3avg
-			Navg2=[N1avg,N2avg,N3avg]
+			;Navg2=[N1avg,N2avg,N3avg]
 			;print,''
 		;print,"unnormalized Navg=",Navg
-			Nnorm=norm(Navg2)
-			for k=0,2 do Navg2[k]/=Nnorm
+			;Nnorm=norm(Navg2)
+			;for k=0,2 do Navg2[k]/=Nnorm
 			;print,"normalized Navg=",Navg
 		;print,'norm(Navg)=',norm(Navg)
-			doprange=[dotproduct(NAVG2,SN_MX1),dotproduct(NAVG2,SN_MX2),dotproduct(NAVG2,SN_MX3)]
+			;doprange=[dotproduct(NAVG2,SN_MX1),dotproduct(NAVG2,SN_MX2),dotproduct(NAVG2,SN_MX3)]
 			
-			if dotproduct(SN,NAVG2) lt min([min(doprange)-5*stddev(doprange),.86]) then begin
+			;if dotproduct(SN,NAVG2) lt min([min(doprange)-5*stddev(doprange),.86]) then begin
 			;print,'N_MC diverges'
-			VdNs=[VdN1,VdN2,VdN3] 
-			VuNs=[VuN1,VuN2,VuN3] 
-			ww2=where(finite(VdNs) eq 1,wcount2)
-			if wcount2 eq 0 then ww2=[1,2,3]
-			ww1=where(VdNs/VuNs gt 0 or VdNs lt  10,wcount1,ncomp=nwc1,complement=nw1) 
-			if wcount1 eq 0 then ww1=ww2
+			;VdNs=[VdN1,VdN2,VdN3] 
+			;VuNs=[VuN1,VuN2,VuN3] 
+			;ww2=where(finite(VdNs) eq 1,wcount2)
+			;if wcount2 eq 0 then ww2=[1,2,3]
+			;ww1=where(VdNs/VuNs gt 0 or VdNs lt  10,wcount1,ncomp=nwc1,complement=nw1) 
+		;	if wcount1 eq 0 then ww1=ww2
 		
-			ww=intersect(ww1,ww2)
+		;	ww=intersect(ww1,ww2)
 
-			wcount=N_elements(ww)
-	;	;print,[SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]]
-			N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
+		;	wcount=N_elements(ww)
+	;	;;print,[SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]]
+		;	N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
 	;	;print,'Navg1=',N1avg
 	;	;print,[SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]]
-			N2avg=mean(([SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)		
+		;	N2avg=mean(([SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)		
 	;	;print,'Navg2=',N2avg
 	;	;print,[SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]]
-			N3avg=mean(([SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
+		;	N3avg=mean(([SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
 	;	;print,'Navg2=',N3avg
-			Navg=[N1avg,N2avg,N3avg]
+		;	Navg=[N1avg,N2avg,N3avg]
 	;	;print,"unnormalized Navg=",Navg
-			Nnorm=norm(Navg)
-			for k=0,2 do Navg[k]/=Nnorm
-			nw=intersect(nw1,ww2)
-			endif
-			use0=0
-		endif
+		;	Nnorm=norm(Navg)
+		;	for k=0,2 do Navg[k]/=Nnorm
+		;	nw=intersect(nw1,ww2)
+		;	endif
+		;	use0=0
+		;endif
 		
-		
-		if nwc1 mod (3+use0) gt 0 and nw[0] ne -1 then begin
+		;use0=0
+		if 0 and nwc1 mod (3+use0) gt 0 and nw[0] ne -1 then begin
 			
 
 			foreach el,nw do begin
 				
-				if el eq 0 and not use0 then continue
-				if total(el eq [0,1,2,3]) eq 0 then continue
+				;if el eq 0 and not use0 then continue
+				;if total(el eq [0,1,2,3]) eq 0 then continue
+				if total(el eq [0,1,2]) eq 0 then continue
 				;;print,'el=', el
 				case el of
-					0: Ntest=SN
-					1: Ntest=SN_MX1
-					2: Ntest=SN_MX2
-					3: Ntest=SN_MX3
+;					0: Ntest=SN
+;					1: Ntest=SN_MX1
+;					2: Ntest=SN_MX2
+;					3: Ntest=SN_MX3
+					0: Ntest=SN_MX1
+					1: Ntest=SN_MX2
+					2: Ntest=SN_MX3
 					;else: continue
 				endcase
 				if (dotproduct(Ntest,N0) gt .86 and -1*dotproduct(Ntest,Vd)/sign(dotproduct(Ntest,Vu)) lt 10) or dotproduct(Ntest,N0) gt .96 then begin
 					ww=[el,ww]
 					ww = ww[UNIQ(ww, SORT(ww))]	
-						N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
+						;N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
+				N1avg=mean(([SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
 	;	;print,'Navg1=',N1avg
 	;	;print,[SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]]
-				N2avg=mean(([SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)		
+				N2avg=mean(([SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)	
+					;N2avg=mean(([SN[1],SN_MX1[1],SN_MX2[1],SN_MX3[1]])[ww],/nan)		
 	;	;print,'Navg2=',N2avg
 	;	;print,[SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]]
-				N3avg=mean(([SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
+				N3avg=mean(([SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
+				;N3avg=mean(([SN[2],SN_MX1[2],SN_MX2[2],SN_MX3[2]])[ww],/nan)
 	;	;print,'Navg2=',N3avg
 				Navg=[N1avg,N2avg,N3avg]
 	;	;print,"unnormalized Navg=",Navg
 				Nnorm=norm(Navg)
+				for k=0,2 do Navg[k]/=Nnorm
 				endif
 			
 			
@@ -348,11 +361,11 @@ function paramrecalc,dat
 			printf,1,'NAVG=['+strtrim(NAVG[0],2)+','+strtrim(NAVG[1],2)+','+strtrim(NAVG[2],2)+']'
 			printf,1,'VD=['+strtrim(VD[0],2)+','+strtrim(VD[1],2)+','+strtrim(VD[2],2)+']'
 		
-			printf,1,'VDN_mc=',VDNmc
+			;printf,1,'VDN_mc=',VDNmc
 			printf,1,'VDN1=',VDN1
 			printf,1,'VDN2=',VDN2
 			printf,1,'VDN3=',VDN3
-			printf,1,'Nmc=['+strtrim(SN[0],2)+','+strtrim(SN[1],2)+','+strtrim(SN[2],2)+']'
+			;printf,1,'Nmc=['+strtrim(SN[0],2)+','+strtrim(SN[1],2)+','+strtrim(SN[2],2)+']'
 			printf,1,'NMX1=['+strtrim(SN_MX1[0],2)+','+strtrim(SN_MX1[1],2)+','+strtrim(SN_MX1[2],2)+']'
 			printf,1,'NMX2=['+strtrim(SN_MX2[0],2)+','+strtrim(SN_MX2[1],2)+','+strtrim(SN_MX2[2],2)+']'
 			printf,1,'NMX3=['+strtrim(SN_MX3[0],2)+','+strtrim(SN_MX3[1],2)+','+strtrim(SN_MX3[2],2)+']'
