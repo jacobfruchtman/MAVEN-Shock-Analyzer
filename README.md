@@ -34,7 +34,7 @@ The raw quantities (plus M_crit which takes a while to calculate) for our aggrag
 
 -MAVEN position at time of crossing (in km)
 
--MAVEN latitude at time of crossing
+-MAVEN latitude and longitude at time of crossing
 
 -automatically measured Bmax of the shock (in nT)
 
