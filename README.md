@@ -26,7 +26,7 @@ A single [MAVEN] day's script is split into four sections
 
 overmachplotter aggragates the data together. We can then plot things with shockaggragateplotter, or compare aggragated data using other procedures in the "Aggragate" directory
 
-The raw quantities (plus M_crit which takes a while to calculate) for our aggragated data are given in shockdata.csv. The quantities given in this file are
+The raw quantities (plus M_crit which takes a while to calculate) for our aggragated data are given in shockdataExpanded.csv. The quantities given in this file are
 
 -time of crossing
 
