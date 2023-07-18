@@ -84,4 +84,5 @@ The raw quantities (plus M_crit which takes a while to calculate) for our aggrag
 -Shock's Upstream fast magnetosonic mach number Mfms, as calculated from above quantities $\vec{V}_U^{ion}$, $\hat{n}_{AVG}$, VA, and thetaBN
 
 -Mcrit, as calculated from above thetaBN, and total beta
+ 
 
