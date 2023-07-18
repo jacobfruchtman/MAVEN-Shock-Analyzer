@@ -26,9 +26,11 @@ A single [MAVEN] day's script is split into four sections
 
 overmachplotter aggragates the data together. We can then plot things with shockaggragateplotter, or compare aggragated data using other procedures in the "Aggragate" directory
 
-The raw quantities (plus M_crit which takes a while to calculate) for our aggragated data are given in shockdataExpanded.csv. The quantities given in this file are
+The raw quantities (plus M_crit which takes a while to calculate) for our aggragated data are given in shockdataExpanded.csv and shockdataExpandedFormatted.csv (only difference between the two is that the units for each quantity are in the second row in the latter file rather than being included in the heading row as in the former). The quantities given in these files are
 
 -time of crossing
+
+-timestamps for the beginning and end of representative upstream and downstream intervals for use in taking time averages of representative quantities in the region (see below)
 
 -L_S (Mars Solar Longitude)
 
