@@ -20,7 +20,7 @@ function shocknorm, a , b, c
 ;	;;print,"bd=",bd
 ;	;;print,"bu=",bu
 	
-	nu= cp(cp(a,b),c)
+	nu= crossp(crossp(a,b),c)
 	;;;print,nu
 	mag=sqrt(nu[0]^2+ nu[1]^2+nu[2]^2)
 	;;;print,mag
@@ -56,6 +56,23 @@ function paramrecalc,dat
 	S0n=dat.N_conic
 	ANGLE=fltarr(N)
 	shock0acc=ANGLE
+	
+	R_m = 3389.50D  ; +/- 0.2
+	
+	 x0  = 0.600*R_m
+ 	ecc = 1.026
+  	L   = 2.081*R_m
+  	MM=[x0,ecc,L]
+  	ttc=findgen(120.*100.)*!dtor/100.
+	aconicfit2,ttc,MM,Rcon
+	xcon=Rcon*cos(ttc)
+	rhocon=Rcon*sin(ttc)
+	
+	
+	
+	
+	
+	
 	for j=0,N-1 do begin
 		;print,time_string(t[j])
 		Bu=transpose(Buvec[j,*])
@@ -75,19 +92,19 @@ function paramrecalc,dat
 		SN_MX1 =shocknorm(BU,dv,dB)
 		SN_MX2=shocknorm(BD,dv,dB)
 		SN_MX3=shocknorm(dB,dv,dB)
-		;VdNmc=dotproduct(SN,Vd)
+		;VdNmc=dotp(SN,Vd)
 		
 	;	;print,"N_MC(BD,BU,dB)=",SN
 				;n_SN[i,*]=
 		
 
-		VdN1=dotproduct(SN_MX1,Vd)
+		VdN1=dotp(SN_MX1,Vd)
 	;	;print,"N_MX1(BU,dV,dB)=",SN_MX1
 		
-		VdN2=dotproduct(SN_MX2,Vd)
+		VdN2=dotp(SN_MX2,Vd)
 	;	;print,"N_MX2(BD,dV,dB)=",SN_MX2
 
-		VdN3=dotproduct(SN_MX3,Vd)
+		VdN3=dotp(SN_MX3,Vd)
 	;	;print,"N_MX3(BD,dV,dB)=",SN_MX3	
 	;	;print,''
 	;	;print,"POS=",Pos[j,*]
@@ -102,13 +119,13 @@ function paramrecalc,dat
 	;	;print,"N3_CYL=",n_SN3cyl
 	;	;print,''
 	;	;print,'N_conic=',S0n[j,*]
-		;n_SN_Acc=vecDotProduct(n_SNcyl,S0n[j,*])
+		;n_SN_Acc=dotp(n_SNcyl,S0n[j,*])
 	;	;print,'Nmc.Nconic=',n_SN_Acc
-		n_SN_MX1_Acc=vecDotProduct(n_SN1cyl,S0n[j,*])
+		n_SN_MX1_Acc=dotp(n_SN1cyl,S0n[j,*])
 	;	;print,'Nmx1.Nconic=',n_SN_MX1_Acc
-		n_SN_MX2_Acc=vecDotProduct(n_SN2cyl,S0n[j,*])
+		n_SN_MX2_Acc=dotp(n_SN2cyl,S0n[j,*])
 	;	;print,'Nmx2.Nconic=',n_SN_MX2_Acc
-		n_SN_MX3_Acc=vecDotProduct(n_SN3cyl,S0n[j,*])
+		n_SN_MX3_Acc=dotp(n_SN3cyl,S0n[j,*])
 	;	;print,'Nmx3.Nconic=',n_SN_MX3_Acc
 		;if n_SN_Acc le 0 then begin
 	;		;print,'MC reversed'
@@ -116,7 +133,7 @@ function paramrecalc,dat
 	;		;print,'NtempMC=',ntemp
 			;n_SNcyltemp=carttocyl_instant(Ntemp,Pos[j,*])
 	;		;print,'Ncyl=',n_SNcyltemp
-			;acctemp=vecDotProduct(n_SNcyltemp,S0n[j,*])
+			;acctemp=dotp(n_SNcyltemp,S0n[j,*])
 	;		;print,'Ntemp.Nconic=',acctemp
 			;if acctemp gt n_SN_ACC then begin
 	;			;print,'updating to new'
@@ -132,7 +149,7 @@ function paramrecalc,dat
 	;		;print,'N1temp=',ntemp
 			n_SNcyltemp=carttocyl_instant(Ntemp,Pos[j,*])
 	;		;print,'N1cyl=',n_SNcyltemp
-			acctemp=vecDotProduct(n_SNcyltemp,S0n[j,*])
+			acctemp=dotp(n_SNcyltemp,S0n[j,*])
 	;		;print,'N1temp.Nconic=',acctemp
 			if acctemp gt n_SN_MX1_ACC then begin
 	;			;print,'updating to new'
@@ -148,7 +165,7 @@ function paramrecalc,dat
 	;		;print,'N2temp=',ntemp
 			n_SNcyltemp=carttocyl_instant(Ntemp,Pos[j,*])
 	;		;print,'N2cyl=',n_SNcyltemp
-			acctemp=vecDotProduct(n_SNcyltemp,S0n[j,*])
+			acctemp=dotp(n_SNcyltemp,S0n[j,*])
 	;		;print,'N2temp.Nconic=',acctemp
 			if acctemp gt n_SN_MX2_ACC then begin
 	;			;print,'updating to new'
@@ -164,7 +181,7 @@ function paramrecalc,dat
 	;		;print,'N3temp=',ntemp
 			n_SNcyltemp=carttocyl_instant(Ntemp,Pos[j,*])
 	;		;print,'N3cyl=',n_SNcyltemp
-			acctemp=vecDotProduct(n_SNcyltemp,S0n[j,*])
+			acctemp=dotp(n_SNcyltemp,S0n[j,*])
 	;		;print,'N3temp.Nconic=',acctemp
 			if acctemp gt n_SN_MX3_ACC then begin
 	;			;print,'updating to new'
@@ -174,32 +191,32 @@ function paramrecalc,dat
 			endif
 		endif
 		
-		;VdNmc=dotproduct(SN,Vd)
+		;VdNmc=dotp(SN,Vd)
 		
 	;	;print,"N_MC(BD,BU,dB)=",SN
 				;n_SN[i,*]=
 		
 
-		VdN1=dotproduct(SN_MX1,Vd)
+		VdN1=dotp(SN_MX1,Vd)
 	;	;print,"N_MX1(BU,dV,dB)=",SN_MX1
 		
-		VdN2=dotproduct(SN_MX2,Vd)
+		VdN2=dotp(SN_MX2,Vd)
 	;	;print,"N_MX2(BD,dV,dB)=",SN_MX2
 
-		VdN3=dotproduct(SN_MX3,Vd)
-		;VuNmc=dotproduct(SN,Vu)
+		VdN3=dotp(SN_MX3,Vd)
+		;VuNmc=dotp(SN,Vu)
 		
 	;	;print,"N_MC(BD,BU,dB)=",SN
 				;n_SN[i,*]=
 		
 
-		VuN1=dotproduct(SN_MX1,Vu)
+		VuN1=dotp(SN_MX1,Vu)
 	;	;print,"N_MX1(BU,dV,dB)=",SN_MX1
 		
-		VuN2=dotproduct(SN_MX2,Vu)
+		VuN2=dotp(SN_MX2,Vu)
 	;	;print,"N_MX2(BD,dV,dB)=",SN_MX2
 
-		VuN3=dotproduct(SN_MX3,Vu)
+		VuN3=dotp(SN_MX3,Vu);dotproduct(SN_MX3,Vu)
 		;VdNs=[VdNmc,VdN1,VdN2,VdN3] 
 		;VuNs=[VuNmc,VuN1,VuN2,VuN3] 
 		VdNs=[VdN1,VdN2,VdN3] 
@@ -241,8 +258,8 @@ function paramrecalc,dat
 		N0=NAVG
 		
 		n_AVGcyl=carttocyl_instant(NAVG,Pos[j,*])
-		dop=dotproduct(N_AVGcyl,S0n[j,*])
-		;dopmc=dotproduct(SN,NAVG)
+		dop=dotp(N_AVGcyl,S0n[j,*])
+		;dopmc=dotp(SN,NAVG)
 		use0=total(ww eq 0)
 		;if 0 and dop lt .6 then begin
 		;print,''
@@ -314,7 +331,7 @@ function paramrecalc,dat
 					2: Ntest=SN_MX3
 					;else: continue
 				endcase
-				if (dotproduct(Ntest,N0) gt .86 and -1*dotproduct(Ntest,Vd)/sign(dotproduct(Ntest,Vu)) lt 10) or dotproduct(Ntest,N0) gt .96 then begin
+				if (dotp(Ntest,N0) gt .86 and -1*dotp(Ntest,Vd)/sign(dotp(Ntest,Vu)) lt 10) or dotproduct(Ntest,N0) gt .96 then begin
 					ww=[el,ww]
 					ww = ww[UNIQ(ww, SORT(ww))]	
 						;N1avg=mean(([SN[0],SN_MX1[0],SN_MX2[0],SN_MX3[0]])[ww],/nan)
@@ -340,8 +357,8 @@ function paramrecalc,dat
 		
 		endif
 		
-		VDN=dotproduct(NAVG,Vd)
-		VUN=dotproduct(NAVG,Vu)
+		VDN=dotp(NAVG,Vd)
+		VUN=dotp(NAVG,Vu)
 		if VDN/VUN le 0 or (wcount01 mod 4 gt 0) then begin
 			openU,1,'Documents/whereNegVdN.txt',/APPEND
 			tx=''
@@ -378,7 +395,7 @@ function paramrecalc,dat
 		;;print,"thBNavg=",ANGLE[j]*180/!pi
 		for k=0,2 do N_SN[j,k]=Navg[k]
 		n_AVGcyl=carttocyl_instant(NAVG,Pos[j,*])
-		shock0acc[j]=dotproduct(N_AVGcyl,S0n[j,*])
+		shock0acc[j]=dotp(N_AVGcyl,S0n[j,*])
 		;;print,'shock0acc=',shock0acc[j]
 		;print,'~~~~~~~~~~~``
 	endfor 	
