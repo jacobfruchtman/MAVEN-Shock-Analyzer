@@ -59,7 +59,7 @@ The raw quantities (plus M_crit which takes a while to calculate) for our aggrag
 
 --Upstream and downstream |B| (in nT)
 
-
+-DERIVED QUANTITIES:
 
 -FIT parameters:m0,m1,m2,m3 (in nT,Hz,sec,nT): Bfit(t)=m0 tanh(m1(t-m2))+m3
 
@@ -75,5 +75,13 @@ The raw quantities (plus M_crit which takes a while to calculate) for our aggrag
 
 -dot product of the normal vectors (after shifting n_AVG to cylindrical coords)
 
--Mcrit, as calculated from above quantities
+-thetaBN=acos(Bu.N_avg/|Bu|)*180/pi , the shock normal angle, in degrees
+
+-Upstream Alfven and Sound speed VA,CS as calculated from above quantities
+
+-Upstream proton,electron, and total plasma beta (β=β_P+β_E=(n_i T_p+n_e T_e)/(Bu^2 /2mu0)) as calculated from above quantities
+
+-Shock's Upstream fast magnetosonic mach number Mfms, as calculated from above quantities $\vec{V}_U^{ion}$, $\hat{n}_{AVG}$, VA, and thetaBN
+
+-Mcrit, as calculated from above thetaBN, and total beta
 
